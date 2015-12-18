@@ -79,12 +79,11 @@ void svc_tsk_kill( tsk_id tsk )
 {
 //	while (tsk->mlist) mtx_kill(tsk->mlist);
 
+	if (tsk != System.cur) // instead use tsk_stop
 	switch (tsk->id)
 	{
 	case ID_READY:
 		core_tsk_remove(tsk);
-		if (tsk == System.cur)
-		core_ctx_switch();
 		break;
 	case ID_DELAYED:
 		core_tsk_unlink((tsk_id)tsk, E_STOPPED);
