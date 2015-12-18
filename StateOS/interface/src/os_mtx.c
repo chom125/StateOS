@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_mtx.c
     @author  Rajmund Szymanski
-    @date    15.12.2015
+    @date    18.12.2015
     @brief   This file provides set of functions for StateOS.
 
  ******************************************************************************
@@ -29,12 +29,10 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-mtx_id mtx_create( unsigned type )
+mtx_id svc_mtx_create( unsigned type )
 /* -------------------------------------------------------------------------- */
 {
 	mtx_id mtx;
-
-	port_sys_lock();
 
 	mtx = core_sys_alloc(sizeof(mtx_t));
 
@@ -42,8 +40,6 @@ mtx_id mtx_create( unsigned type )
 	{
 		mtx->type = type;
 	}
-
-	port_sys_unlock();
 
 	return mtx;
 }
@@ -85,18 +81,14 @@ static void priv_mtx_unlink( mtx_id mtx )
 }
 
 /* -------------------------------------------------------------------------- */
-void mtx_kill( mtx_id mtx )
+void svc_mtx_kill( mtx_id mtx )
 /* -------------------------------------------------------------------------- */
 {
-	port_sys_lock();
-
 	priv_mtx_unlink(mtx);
 
 	mtx->count = 0;
 
 	core_all_wakeup(mtx, E_STOPPED);
-
-	port_sys_unlock();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -105,8 +97,6 @@ unsigned priv_mtx_wait( mtx_id mtx, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_TIMEOUT;
-
-	port_sys_lock();
 
 	if (mtx->owner == 0)
 	{
@@ -133,33 +123,29 @@ unsigned priv_mtx_wait( mtx_id mtx, unsigned time, unsigned(*wait)() )
 		event = wait(mtx, time);
 	}
 	
-	port_sys_unlock();
-
 	return event;
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned mtx_waitUntil( mtx_id mtx, unsigned time )
+unsigned svc_mtx_waitUntil( mtx_id mtx, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
 	return priv_mtx_wait(mtx, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned mtx_waitFor( mtx_id mtx, unsigned delay )
+unsigned svc_mtx_waitFor( mtx_id mtx, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
 	return priv_mtx_wait(mtx, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned mtx_give( mtx_id mtx )
+unsigned svc_mtx_give( mtx_id mtx )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_TIMEOUT;
 	
-	port_sys_lock();
-
 	if (mtx->owner == System.cur)
 	{
 		if (mtx->count)
@@ -174,8 +160,6 @@ unsigned mtx_give( mtx_id mtx )
 
 		event = E_SUCCESS;
 	}
-
-	port_sys_unlock();
 
 	return event;
 }

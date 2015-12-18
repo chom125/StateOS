@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_tmr.c
     @author  Rajmund Szymanski
-    @date    14.10.2015
+    @date    18.12.2015
     @brief   This file provides set of functions for StateOS.
 
  ******************************************************************************
@@ -29,33 +29,25 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-tmr_id tmr_create( void )
+tmr_id svc_tmr_create( void )
 /* -------------------------------------------------------------------------- */
 {
 	tmr_id tmr;
 
-	port_sys_lock();
-
 	tmr = core_sys_alloc(sizeof(tmr_t));
-
-	port_sys_unlock();
 
 	return tmr;
 }
 
 /* -------------------------------------------------------------------------- */
-void tmr_kill( tmr_id tmr )
+void svc_tmr_kill( tmr_id tmr )
 /* -------------------------------------------------------------------------- */
 {
-	port_sys_lock();
-
 	if (tmr->id != ID_STOPPED)
 	{
 		core_all_wakeup(tmr, E_STOPPED);
 		core_tmr_remove(tmr);
 	}
-
-	port_sys_unlock();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -68,51 +60,39 @@ static void priv_tmr_start( tmr_id tmr )
 }
 
 /* -------------------------------------------------------------------------- */
-void tmr_startUntil( tmr_id tmr, unsigned time, fun_id proc )
+void svc_tmr_startUntil( tmr_id tmr, unsigned time, fun_id proc )
 /* -------------------------------------------------------------------------- */
 {
-	port_sys_lock();
-
 	tmr->state  = proc;
 	tmr->start  = Counter;
 	tmr->delay  = time - tmr->start;
 	tmr->period = 0;
 
 	priv_tmr_start(tmr);
-
-	port_sys_unlock();
 }
 
 /* -------------------------------------------------------------------------- */
-void tmr_startFor( tmr_id tmr, unsigned delay, fun_id proc )
+void svc_tmr_startFor( tmr_id tmr, unsigned delay, fun_id proc )
 /* -------------------------------------------------------------------------- */
 {
-	port_sys_lock();
-
 	tmr->state  = proc;
 	tmr->start  = Counter;
 	tmr->delay  = delay;
 	tmr->period = 0;
 
 	priv_tmr_start(tmr);
-
-	port_sys_unlock();
 }
 
 /* -------------------------------------------------------------------------- */
-void tmr_startPeriodic( tmr_id tmr, unsigned period, fun_id proc )
+void svc_tmr_startPeriodic( tmr_id tmr, unsigned period, fun_id proc )
 /* -------------------------------------------------------------------------- */
 {
-	port_sys_lock();
-
 	tmr->state  = proc;
 	tmr->start  = Counter;
 	tmr->delay  = period;
 	tmr->period = period;
 
 	priv_tmr_start(tmr);
-
-	port_sys_unlock();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -122,27 +102,23 @@ unsigned priv_tmr_wait( tmr_id tmr, unsigned time, unsigned(*wait)() )
 {
 	unsigned event = E_SUCCESS;
 
-	port_sys_lock();
-
 	if (tmr->id != ID_STOPPED)
 	{
 		event = wait(tmr, time);
 	}
 
-	port_sys_unlock();
-
 	return event;
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned tmr_waitUntil( tmr_id tmr, unsigned time )
+unsigned svc_tmr_waitUntil( tmr_id tmr, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
 	return priv_tmr_wait(tmr, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned tmr_waitFor( tmr_id tmr, unsigned delay )
+unsigned svc_tmr_waitFor( tmr_id tmr, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
 	return priv_tmr_wait(tmr, delay, core_tsk_waitFor);

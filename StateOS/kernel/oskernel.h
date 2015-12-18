@@ -2,7 +2,7 @@
 
     @file    State Machine OS: oskernel.h
     @author  Rajmund Szymanski
-    @date    16.12.2015
+    @date    18.12.2015
     @brief   This file defines set of kernel functions for StateOS.
 
  ******************************************************************************
@@ -29,6 +29,8 @@
 #pragma once
 
 #include <osbase.h>
+#include <atomic.h>
+#include <svcall.h>
 #include <bitband.h>
 #include <stdlib.h>
 
@@ -69,7 +71,7 @@ void port_ctx_switch( void );
 /* -------------------------------------------------------------------------- */
 
 // abort and reset current process and switch system to the next
-void core_tsk_break( void ) __noreturn;
+void core_tsk_loop( void ) __noreturn;
 
 /* -------------------------------------------------------------------------- */
 

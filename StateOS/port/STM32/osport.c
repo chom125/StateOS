@@ -2,7 +2,7 @@
 
     @file    State Machine OS: osport.c
     @author  Rajmund Szymanski
-    @date    07.12.2015
+    @date    18.12.2015
     @brief   StateOS port file for STM32 uC.
 
  ******************************************************************************
@@ -66,6 +66,11 @@ void port_sys_init( void )
 
 #endif
 
+#if __CORTEX_M < 3
+	NVIC_SetPriority(SVC_IRQn, OS_LOCK_LEVEL);
+#else
+	NVIC_SetPriority(SVCall_IRQn, OS_LOCK_LEVEL);
+#endif
 	NVIC_SetPriority(PendSV_IRQn, 0xFF);
 
 	core_ctx_reset();

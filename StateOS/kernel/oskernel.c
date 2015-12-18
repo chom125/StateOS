@@ -50,13 +50,11 @@ static tsk_t IDLE = { 0, ID_IDLE,  &MAIN, &MAIN, port_idle_hook, 0, 0, 0, 0, IDL
 void core_ctx_switch( void )
 {
 	port_ctx_switch();
-	if (port_isr_inside()) return; // executed from isr?
-	port_sys_flash();
 }
 
 /* -------------------------------------------------------------------------- */
 
-void core_tsk_break( void )
+void core_tsk_loop( void )
 {
     tsk_id cur = System.cur;
 	
@@ -64,8 +62,7 @@ void core_tsk_break( void )
 
 	for (;;)
 	{
-		port_clr_lock();
-		core_ctx_switch();
+		SVCall(core_ctx_switch);
 		cur->state();
 	}
 }
@@ -156,9 +153,11 @@ void core_tsk_append( tsk_id tsk, os_id obj )
 
 void core_tsk_unlink( tsk_id tsk, unsigned event )
 {
+	ctx_id ctx = tsk->sp;
+	ctx->r0    = event; // value returned from 'wait' function
+
 	tsk_id prv = tsk->back;
 	tsk_id nxt = tsk->queue;
-	tsk->event = event;
 
 	if (nxt)
 	nxt->back  = prv;
@@ -177,7 +176,7 @@ unsigned priv_tsk_wait( tsk_id tsk, obj_id obj )
 
 	core_ctx_switch();
 
-	return tsk->event;
+	return E_SUCCESS;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -282,7 +281,7 @@ void priv_tsk_prepare( tsk_id cur )
 
 		ctx->psr = 0x01000000U;
 		ctx->pc  = cur->state;
-		ctx->lr  = core_tsk_break;
+		ctx->lr  = core_tsk_loop;
 		ctx->exc_return = ~2U; // return from psp
 
 		cur->sp  = ctx;

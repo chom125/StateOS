@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_box.c
     @author  Rajmund Szymanski
-    @date    14.12.2015
+    @date    18.12.2015
     @brief   This file provides set of functions for StateOS.
 
  ******************************************************************************
@@ -29,12 +29,10 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-box_id box_create( unsigned limit, unsigned size )
+box_id svc_box_create( unsigned limit, unsigned size )
 /* -------------------------------------------------------------------------- */
 {
 	box_id box;
-
-	port_sys_lock();
 
 	box = core_sys_alloc(sizeof(box_t) + limit * size);
 
@@ -45,24 +43,18 @@ box_id box_create( unsigned limit, unsigned size )
 		box->data  = (char *)(box + 1);
 	}
 
-	port_sys_unlock();
-
 	return box;
 }
 
 /* -------------------------------------------------------------------------- */
-void box_kill( box_id box )
+void svc_box_kill( box_id box )
 /* -------------------------------------------------------------------------- */
 {
-	port_sys_lock();
-
 	box->count = 0;
 	box->first = 0;
 	box->next  = 0;
 
 	core_all_wakeup(box, E_STOPPED);
-
-	port_sys_unlock();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -96,8 +88,6 @@ unsigned priv_box_wait( box_id box, void *data, unsigned time, unsigned(*wait)()
 {
 	unsigned event = E_SUCCESS;
 
-	port_sys_lock();
-
 	if (box->count == 0)
 	{
 		System.cur->data = data;
@@ -116,20 +106,18 @@ unsigned priv_box_wait( box_id box, void *data, unsigned time, unsigned(*wait)()
 			box->count--;
 	}
 
-	port_sys_unlock();
-
 	return event;
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned box_waitUntil( box_id box, void *data, unsigned time )
+unsigned svc_box_waitUntil( box_id box, void *data, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
 	return priv_box_wait(box, data, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned box_waitFor( box_id box, void *data, unsigned delay )
+unsigned svc_box_waitFor( box_id box, void *data, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
 	return priv_box_wait(box, data, delay, core_tsk_waitFor);
@@ -141,8 +129,6 @@ unsigned priv_box_send( box_id box, void *data, unsigned time, unsigned(*wait)()
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
-
-	port_sys_lock();
 
 	if (box->count >= box->limit)
 	{
@@ -162,20 +148,18 @@ unsigned priv_box_send( box_id box, void *data, unsigned time, unsigned(*wait)()
 			box->count++;
 	}
 
-	port_sys_unlock();
-
 	return event;
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned box_sendUntil( box_id box, void *data, unsigned time )
+unsigned svc_box_sendUntil( box_id box, void *data, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
 	return priv_box_send(box, data, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned box_sendFor( box_id box, void *data, unsigned delay )
+unsigned svc_box_sendFor( box_id box, void *data, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
 	return priv_box_send(box, data, delay, core_tsk_waitFor);

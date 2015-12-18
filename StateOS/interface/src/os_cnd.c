@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_cnd.c
     @author  Rajmund Szymanski
-    @date    16.10.2015
+    @date    18.12.2015
     @brief   This file provides set of functions for StateOS.
 
  ******************************************************************************
@@ -29,29 +29,21 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-cnd_id cnd_create( void )
+cnd_id svc_cnd_create( void )
 /* -------------------------------------------------------------------------- */
 {
 	cnd_id cnd;
 
-	port_sys_lock();
-
 	cnd = core_sys_alloc(sizeof(cnd_t));
-
-	port_sys_unlock();
 
 	return cnd;
 }
 
 /* -------------------------------------------------------------------------- */
-void cnd_kill( cnd_id cnd )
+void svc_cnd_kill( cnd_id cnd )
 /* -------------------------------------------------------------------------- */
 {
-	port_sys_lock();
-
 	core_all_wakeup(cnd, E_STOPPED);
-
-	port_sys_unlock();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -61,13 +53,9 @@ unsigned priv_cnd_wait( cnd_id cnd, mtx_id mtx, unsigned time, unsigned(*wait)()
 {
 	unsigned event;
 
-	port_sys_lock();
-
-	if ((event = mtx_give(mtx))   == E_SUCCESS)
-	if ((event = wait(cnd, time)) == E_SUCCESS)
+	if ((event = mtx_give(mtx))           == E_SUCCESS)
+	if ((event = SVCall(wait, cnd, time)) == E_SUCCESS)
 	     event = mtx_wait(mtx);
-
-	port_sys_unlock();
 
 	return event;
 }
@@ -87,15 +75,11 @@ unsigned cnd_waitFor( cnd_id cnd, mtx_id mtx, unsigned delay )
 }
 
 /* -------------------------------------------------------------------------- */
-void cnd_give( cnd_id cnd, bool all )
+void svc_cnd_give( cnd_id cnd, bool all )
 /* -------------------------------------------------------------------------- */
 {
-	port_sys_lock();
-
 	if (all) core_all_wakeup(cnd, E_SUCCESS);
 	else     core_one_wakeup(cnd, E_SUCCESS);
-
-	port_sys_unlock();
 }
 
 /* -------------------------------------------------------------------------- */

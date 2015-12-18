@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_bar.c
     @author  Rajmund Szymanski
-    @date    15.12.2015
+    @date    18.12.2015
     @brief   This file provides set of functions for StateOS.
 
  ******************************************************************************
@@ -29,12 +29,10 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-bar_id bar_create( unsigned limit )
+bar_id svc_bar_create( unsigned limit )
 /* -------------------------------------------------------------------------- */
 {
 	bar_id bar;
-
-	port_sys_lock();
 
 	bar = core_sys_alloc(sizeof(bar_t));
 
@@ -44,22 +42,16 @@ bar_id bar_create( unsigned limit )
 		bar->limit = limit;
 	}
 
-	port_sys_unlock();
-
 	return bar;
 }
 
 /* -------------------------------------------------------------------------- */
-void bar_kill( bar_id bar )
+void svc_bar_kill( bar_id bar )
 /* -------------------------------------------------------------------------- */
 {
-	port_sys_lock();
-
 	bar->count = bar->limit;
 
 	core_all_wakeup(bar, E_STOPPED);
-
-	port_sys_unlock();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -68,8 +60,6 @@ unsigned priv_bar_wait( bar_id bar, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
-
-	port_sys_lock();
 
 	if (--bar->count > 0)
 	{
@@ -82,20 +72,18 @@ unsigned priv_bar_wait( bar_id bar, unsigned time, unsigned(*wait)() )
 		core_all_wakeup(bar, E_SUCCESS);
 	}
 
-	port_sys_unlock();
-
 	return event;
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned bar_waitUntil( bar_id bar, unsigned time )
+unsigned svc_bar_waitUntil( bar_id bar, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
 	return priv_bar_wait(bar, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned bar_waitFor( bar_id bar, unsigned delay )
+unsigned svc_bar_waitFor( bar_id bar, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
 	return priv_bar_wait(bar, delay, core_tsk_waitFor);

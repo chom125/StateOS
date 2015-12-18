@@ -17,6 +17,9 @@ Features:
 - timers (one-shot, periodic)
 - c++ wrapper
 ---------
+0.9.6 (svc branch)
+- svc used to call system functions
+---------
 0.9.5
 - fixed semaphore functions
 - removed semDirect constant

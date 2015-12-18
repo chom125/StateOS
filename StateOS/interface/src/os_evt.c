@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_evt.c
     @author  Rajmund Szymanski
-    @date    14.10.2015
+    @date    18.12.2015
     @brief   This file provides set of functions for StateOS.
 
  ******************************************************************************
@@ -29,29 +29,21 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-evt_id evt_create( void )
+evt_id svc_evt_create( void )
 /* -------------------------------------------------------------------------- */
 {
 	evt_id evt;
 
-	port_sys_lock();
-
 	evt = core_sys_alloc(sizeof(evt_t));
-
-	port_sys_unlock();
 
 	return evt;
 }
 
 /* -------------------------------------------------------------------------- */
-void evt_kill( evt_id evt )
+void svc_evt_kill( evt_id evt )
 /* -------------------------------------------------------------------------- */
 {
-	port_sys_lock();
-
 	core_all_wakeup(evt, E_STOPPED);
-
-	port_sys_unlock();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -61,38 +53,30 @@ unsigned priv_evt_wait( evt_id evt, unsigned time, unsigned(*wait)() )
 {
 	unsigned event;
 
-	port_sys_lock();
-
 	event = wait(evt, time);
-
-	port_sys_unlock();
 
 	return event;
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned evt_waitUntil( evt_id evt, unsigned time )
+unsigned svc_evt_waitUntil( evt_id evt, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
 	return priv_evt_wait(evt, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned evt_waitFor( evt_id evt, unsigned delay )
+unsigned svc_evt_waitFor( evt_id evt, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
 	return priv_evt_wait(evt, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
-void evt_give( evt_id evt, unsigned event )
+void svc_evt_give( evt_id evt, unsigned event )
 /* -------------------------------------------------------------------------- */
 {
-	port_sys_lock();
-
 	core_all_wakeup(evt, event);
-
-	port_sys_unlock();
 }
 
 /* -------------------------------------------------------------------------- */

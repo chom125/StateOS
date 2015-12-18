@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_sem.h
     @author  Rajmund Szymanski
-    @date    14.12.2015
+    @date    18.12.2015
     @brief   This file contains definitions for StateOS.
 
  ******************************************************************************
@@ -59,60 +59,66 @@ extern "C" {
 // z maksymaln¹ liczb¹ ¿etonów 'limit'
 // limit: semNormal, semBinary, other unsigned
 // zwraca adres utworzonego obiektu, lub 0
-              sem_id   sem_create( unsigned limit );
+              sem_id   svc_sem_create( unsigned limit );
+static inline sem_id       sem_create( unsigned limit ) { return (sem_id) SVCall(svc_sem_create, limit); }
 
 // reset obiektu 'sem'
 // wszystkie procesy oczekuj¹ce zostaj¹ wybudzone
 // zostaje do nich wys³any komunikat E_STOPPED
-              void     sem_kill( sem_id sem );
+              void     svc_sem_kill( sem_id sem );
+static inline void         sem_kill( sem_id sem ) { SVCall(svc_sem_kill, sem); }
 
 // zawieszenie wykonywania aktualnego procesu do czasu 'time'
 // lub do wybudzenia przez obiekt 'sem'
 // jeœli liczba ¿etonów jest wiêksza od zera, to nastêpuje zajêcie obiektu 'sem'
 // zwraca E_SUCCESS, E_STOPPED lub E_TIMEOUT
-              unsigned sem_waitUntil( sem_id sem, unsigned time );
+              unsigned svc_sem_waitUntil( sem_id sem, unsigned time );
+static inline unsigned     sem_waitUntil( sem_id sem, unsigned time ) { return SVCall(svc_sem_waitUntil, sem, time); }
 
 // zawieszenie wykonywania aktualnego procesu na czas 'delay'
 // lub do wybudzenia przez obiekt 'sem'
 // jeœli liczba ¿etonów jest wiêksza od zera, to nastêpuje zajêcie obiektu 'sem'
 // zwraca E_SUCCESS, E_STOPPED lub E_TIMEOUT
-              unsigned sem_waitFor( sem_id sem, unsigned delay );
+              unsigned svc_sem_waitFor( sem_id sem, unsigned delay );
+static inline unsigned     sem_waitFor( sem_id sem, unsigned delay ) { return SVCall(svc_sem_waitFor, sem, delay); }
 
 // zawieszenie wykonywania aktualnego procesu
 // do czasu wybudzenia przez obiekt 'sem'
 // jeœli liczba ¿etonów jest wiêksza od zera, to nastêpuje zajêcie obiektu 'sem'
 // zwraca E_SUCCESS lub E_STOPPED
-static inline unsigned sem_wait( sem_id sem ) { return sem_waitFor(sem, INFINITE); }
+static inline unsigned     sem_wait( sem_id sem ) { return sem_waitFor(sem, INFINITE); }
 
 // nie zawiesza aktualnie wykonywanego procesu
 // jeœli liczba ¿etonów jest wiêksza od zera, to nastêpuje zajêcie obiektu 'sem'
 // zwraca E_SUCCESS lub E_TIMEOUT
-static inline unsigned sem_take   ( sem_id sem ) { return sem_waitFor(sem, IMMEDIATE); }
-static inline unsigned sem_takeISR( sem_id sem ) { return sem_waitFor(sem, IMMEDIATE); }
+static inline unsigned     sem_take   ( sem_id sem ) { return sem_waitFor(sem, IMMEDIATE); }
+static inline unsigned     sem_takeISR( sem_id sem ) { return sem_waitFor(sem, IMMEDIATE); }
 
 // zawieszenie wykonywania aktualnego procesu do czasu 'time'
 // lub do wybudzenia przez obiekt 'sem'
 // jeœli liczba ¿etonów jest mniejsza od maksymalnej, to nastêpuje zwolnienie obiektu 'sem'
 // zwraca E_SUCCESS, E_STOPPED lub E_TIMEOUT
-              unsigned sem_sendUntil( sem_id sem, unsigned time );
+              unsigned svc_sem_sendUntil( sem_id sem, unsigned time );
+static inline unsigned     sem_sendUntil( sem_id sem, unsigned time ) { return SVCall(svc_sem_sendUntil, sem, time); }
 
 // zawieszenie wykonywania aktualnego procesu na czas 'delay'
 // lub do wybudzenia przez obiekt 'sem'
 // jeœli liczba ¿etonów jest mniejsza od maksymalnej, to nastêpuje zwolnienie obiektu 'sem'
 // zwraca E_SUCCESS, E_STOPPED lub E_TIMEOUT
-              unsigned sem_sendFor( sem_id sem, unsigned delay );
+              unsigned svc_sem_sendFor( sem_id sem, unsigned delay );
+static inline unsigned     sem_sendFor( sem_id sem, unsigned delay ) { return SVCall(svc_sem_sendFor, sem, delay); }
 
 // zawieszenie wykonywania aktualnego procesu
 // do wybudzenia przez obiekt 'sem'
 // jeœli liczba ¿etonów jest mniejsza od maksymalnej, to nastêpuje zwolnienie obiektu 'sem'
 // zwraca E_SUCCESS lub E_STOPPED
-static inline unsigned sem_send( sem_id sem ) { return sem_sendFor(sem, INFINITE); }
+static inline unsigned     sem_send( sem_id sem ) { return sem_sendFor(sem, INFINITE); }
 
 // nie zawiesza aktualnie wykonywanego procesu
 // jeœli liczba ¿etonów jest mniejsza od maksymalnej, to nastêpuje zwolnienie obiektu 'sem'
 // zwraca E_SUCCESS lub E_TIMEOUT
-static inline unsigned sem_give   ( sem_id sem ) { return sem_sendFor(sem, IMMEDIATE); }
-static inline unsigned sem_giveISR( sem_id sem ) { return sem_sendFor(sem, IMMEDIATE); }
+static inline unsigned     sem_give   ( sem_id sem ) { return sem_sendFor(sem, IMMEDIATE); }
+static inline unsigned     sem_giveISR( sem_id sem ) { return sem_sendFor(sem, IMMEDIATE); }
 
 /* -------------------------------------------------------------------------- */
 

@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_flg.h
     @author  Rajmund Szymanski
-    @date    26.11.2015
+    @date    18.12.2015
     @brief   This file contains definitions for StateOS.
 
  ******************************************************************************
@@ -63,38 +63,43 @@ extern "C" {
 // utworzenie obiektu typu flaga (flg)
 // 'mask' zabezpiecza flagi, które nie mog¹ byæ kasowane (mog¹ byæ tylko ustawiane)
 // zwraca adres utworzonego obiektu, lub 0
-              flg_id   flg_create( unsigned mask );
+              flg_id   svc_flg_create( unsigned mask );
+static inline flg_id       flg_create( unsigned mask ) { return (flg_id) SVCall(svc_flg_create, mask); }
 
 // reset obiektu 'flg'
 // wszystkie procesy oczekuj¹ce zostaj¹ wybudzone
 // zostaje do nich wys³any komunikat E_STOPPED
-              void     flg_kill( flg_id flg );
+              void     svc_flg_kill( flg_id flg );
+static inline void         flg_kill( flg_id flg ) { SVCall(svc_flg_kill, flg); }
 
 // zawieszenie wykonywania aktualnego procesu do czasu 'time'
 // lub do wybudzenia przez oczekiwan¹ flagê lub wszystkie flagi (all)
 // all: flgOne, flgAll
 // zwraca E_SUCCESS, E_STOPPED lub E_TIMEOUT
-              unsigned flg_waitUntil( flg_id flg, unsigned flags, unsigned mode, unsigned time );
+              unsigned svc_flg_waitUntil( flg_id flg, unsigned flags, unsigned mode, unsigned time );
+static inline unsigned     flg_waitUntil( flg_id flg, unsigned flags, unsigned mode, unsigned time ) { return SVCall(svc_flg_waitUntil, flg, flags, mode, time); }
 
 // zawieszenie wykonywania aktualnego procesu na czas 'delay'
 // lub do wybudzenia przez oczekiwan¹ flagê lub wszystkie flagi (all)
 // zwraca E_SUCCESS, E_STOPPED lub E_TIMEOUT
-              unsigned flg_waitFor( flg_id flg, unsigned flags, unsigned mode, unsigned delay );
+              unsigned svc_flg_waitFor( flg_id flg, unsigned flags, unsigned mode, unsigned delay );
+static inline unsigned     flg_waitFor( flg_id flg, unsigned flags, unsigned mode, unsigned delay ) { return SVCall(svc_flg_waitFor, flg, flags, mode, delay); }
 
 // zawieszenie wykonywania aktualnego procesu
 // do czasu wybudzenia przez oczekiwan¹ flagê lub wszystkie flagi (all)
 // zwraca E_SUCCESS lub E_STOPPED
-static inline unsigned flg_wait( flg_id flg, unsigned flags, unsigned mode ) { return flg_waitFor(flg, flags, mode, INFINITE); }
+static inline unsigned     flg_wait( flg_id flg, unsigned flags, unsigned mode ) { return flg_waitFor(flg, flags, mode, INFINITE); }
 
 // nie zawieszenie wykonywania aktualnego procesu
 // sprawdza oczekiwan¹ flagê lub wszystkie flagi (all)
 // zwraca E_SUCCESS lub E_TIMEOUT
-static inline unsigned flg_take   ( flg_id flg, unsigned flags, unsigned mode ) { return flg_waitFor(flg, flags, mode, IMMEDIATE); }
-static inline unsigned flg_takeISR( flg_id flg, unsigned flags, unsigned mode ) { return flg_waitFor(flg, flags, mode, IMMEDIATE); }
+static inline unsigned     flg_take   ( flg_id flg, unsigned flags, unsigned mode ) { return flg_waitFor(flg, flags, mode, IMMEDIATE); }
+static inline unsigned     flg_takeISR( flg_id flg, unsigned flags, unsigned mode ) { return flg_waitFor(flg, flags, mode, IMMEDIATE); }
 
 // wysy³a flagê lub flagi do obiektu 'flg'
-              void     flg_give   ( flg_id flg, unsigned flags );
-static inline void     flg_giveISR( flg_id flg, unsigned flags ) { flg_give(flg, flags); }
+              void     svc_flg_give   ( flg_id flg, unsigned flags );
+static inline void         flg_give   ( flg_id flg, unsigned flags ) { SVCall(svc_flg_give, flg, flags); }
+static inline void         flg_giveISR( flg_id flg, unsigned flags ) { flg_give(flg, flags); }
 
 /* -------------------------------------------------------------------------- */
 

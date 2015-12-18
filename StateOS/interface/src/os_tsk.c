@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_tsk.c
     @author  Rajmund Szymanski
-    @date    15.12.2015
+    @date    18.12.2015
     @brief   This file provides set of functions for StateOS.
 
  ******************************************************************************
@@ -29,13 +29,12 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-tsk_id tsk_create( unsigned prio, fun_id state, unsigned size )
+tsk_id svc_tsk_create( unsigned prio, fun_id state, unsigned size )
 /* -------------------------------------------------------------------------- */
 {
 	size = ASIZE(sizeof(tsk_t) + size);
-	tsk_id tsk;
 
-	port_sys_lock();
+	tsk_id tsk;
 
 	tsk = core_sys_alloc(size);
 
@@ -49,46 +48,35 @@ tsk_id tsk_create( unsigned prio, fun_id state, unsigned size )
 		core_tsk_insert(tsk);
 	}
 
-	port_sys_unlock();
-
 	return tsk;
 }
 
 /* -------------------------------------------------------------------------- */
-void tsk_start( tsk_id tsk )
+void svc_tsk_start( tsk_id tsk )
 /* -------------------------------------------------------------------------- */
 {
-	port_sys_lock();
-
 	if (tsk->id == ID_STOPPED)
 	{
 		tsk->sp = 0;
 
 		core_tsk_insert(tsk);
 	}
-
-	port_sys_unlock();
 }
 
 /* -------------------------------------------------------------------------- */
-void tsk_stop( void )
+void svc_tsk_stop( void )
 /* -------------------------------------------------------------------------- */
 {
-	port_set_lock();
-
 //	while (System.cur->mlist) mtx_kill(System.cur->mlist);
 
 	core_tsk_remove(System.cur);
 	core_ctx_switch();
-	for (;;);
 }
 
 /* -------------------------------------------------------------------------- */
-void tsk_kill( tsk_id tsk )
+void svc_tsk_kill( tsk_id tsk )
 /* -------------------------------------------------------------------------- */
 {
-	port_sys_lock();
-
 //	while (tsk->mlist) mtx_kill(tsk->mlist);
 
 	switch (tsk->id)
@@ -103,8 +91,6 @@ void tsk_kill( tsk_id tsk )
 		core_tmr_remove((tmr_id)tsk);
 		break;
 	}
-
-	port_sys_unlock();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -113,20 +99,16 @@ void tsk_flip( fun_id state )
 {
 	System.cur->state = state;
 
-	core_tsk_break();
+	core_tsk_loop();
 }
 
 /* -------------------------------------------------------------------------- */
-void tsk_prio( unsigned prio )
+void svc_tsk_prio( unsigned prio )
 /* -------------------------------------------------------------------------- */
 {
-	port_sys_lock();
-
 	System.cur->bprio = prio;
 
 	core_tsk_prio(System.cur, prio);
-
-	port_sys_unlock();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -136,39 +118,31 @@ unsigned priv_tsk_sleep( unsigned time, unsigned(*wait)() )
 {
 	unsigned event;
 
-	port_sys_lock();
-
 	event = wait(System.cur, time);
-
-	port_sys_unlock();
 
 	return event;
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned tsk_sleepUntil( unsigned time )
+unsigned svc_tsk_sleepUntil( unsigned time )
 /* -------------------------------------------------------------------------- */
 {
 	return priv_tsk_sleep(time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned tsk_sleepFor( unsigned delay )
+unsigned svc_tsk_sleepFor( unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
 	return priv_tsk_sleep(delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
-void tsk_resume( tsk_id tsk, unsigned event )
+void svc_tsk_resume( tsk_id tsk, unsigned event )
 /* -------------------------------------------------------------------------- */
 {
-	port_sys_lock();
-
 	if (tsk->id == ID_DELAYED)
 	core_tsk_wakeup(tsk, event);
-
-	port_sys_unlock();
 }
 
 /* -------------------------------------------------------------------------- */

@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_msg.c
     @author  Rajmund Szymanski
-    @date    14.12.2015
+    @date    18.12.2015
     @brief   This file provides set of functions for StateOS.
 
  ******************************************************************************
@@ -29,12 +29,10 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-msg_id msg_create( unsigned limit )
+msg_id svc_msg_create( unsigned limit )
 /* -------------------------------------------------------------------------- */
 {
 	msg_id msg;
-
-	port_sys_lock();
 
 	msg = core_sys_alloc(sizeof(msg_t) + limit * sizeof(unsigned));
 
@@ -44,24 +42,18 @@ msg_id msg_create( unsigned limit )
 		msg->data  = (unsigned *)(msg + 1);
 	}
 
-	port_sys_unlock();
-
 	return msg;
 }
 
 /* -------------------------------------------------------------------------- */
-void msg_kill( msg_id msg )
+void svc_msg_kill( msg_id msg )
 /* -------------------------------------------------------------------------- */
 {
-	port_sys_lock();
-
 	msg->count = 0;
 	msg->first = 0;
 	msg->next  = 0;
 
 	core_all_wakeup(msg, E_STOPPED);
-
-	port_sys_unlock();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -89,8 +81,6 @@ unsigned priv_msg_wait( msg_id msg, unsigned *data, unsigned time, unsigned(*wai
 {
 	unsigned event = E_SUCCESS;
 
-	port_sys_lock();
-
 	if (msg->count == 0)
 	{
 		System.cur->data = data;
@@ -109,20 +99,18 @@ unsigned priv_msg_wait( msg_id msg, unsigned *data, unsigned time, unsigned(*wai
 			msg->count--;
 	}
 
-	port_sys_unlock();
-
 	return event;
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned msg_waitUntil( msg_id msg, unsigned *data, unsigned time )
+unsigned svc_msg_waitUntil( msg_id msg, unsigned *data, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
 	return priv_msg_wait(msg, data, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned msg_waitFor( msg_id msg, unsigned *data, unsigned delay )
+unsigned svc_msg_waitFor( msg_id msg, unsigned *data, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
 	return priv_msg_wait(msg, data, delay, core_tsk_waitFor);
@@ -134,8 +122,6 @@ unsigned priv_msg_send( msg_id msg, unsigned data, unsigned time, unsigned(*wait
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
-
-	port_sys_lock();
 
 	if (msg->count >= msg->limit)
 	{
@@ -155,20 +141,18 @@ unsigned priv_msg_send( msg_id msg, unsigned data, unsigned time, unsigned(*wait
 			msg->count++;
 	}
 
-	port_sys_unlock();
-
 	return event;
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned msg_sendUntil( msg_id msg, unsigned data, unsigned time )
+unsigned svc_msg_sendUntil( msg_id msg, unsigned data, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
 	return priv_msg_send(msg, data, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned msg_sendFor( msg_id msg, unsigned data, unsigned delay )
+unsigned svc_msg_sendFor( msg_id msg, unsigned data, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
 	return priv_msg_send(msg, data, delay, core_tsk_waitFor);
