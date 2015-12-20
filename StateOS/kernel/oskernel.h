@@ -2,7 +2,7 @@
 
     @file    State Machine OS: oskernel.h
     @author  Rajmund Szymanski
-    @date    18.12.2015
+    @date    20.12.2015
     @brief   This file defines set of kernel functions for StateOS.
 
  ******************************************************************************
@@ -29,7 +29,6 @@
 #pragma once
 
 #include <osbase.h>
-#include <atomic.h>
 #include <svcall.h>
 #include <bitband.h>
 #include <stdlib.h>
