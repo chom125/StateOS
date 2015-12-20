@@ -28,6 +28,7 @@
 
 #ifdef __GNUC__
 
+__attribute__((naked))
 void SVC_Handler( void )
 {
 	__asm volatile
