@@ -2,7 +2,7 @@
 
     @file    State Machine OS: oskernel.c
     @author  Rajmund Szymanski
-    @date    18.12.2015
+    @date    19.12.2015
     @brief   This file provides set of variables and functions for StateOS.
 
  ******************************************************************************
@@ -154,7 +154,7 @@ void core_tsk_append( tsk_id tsk, os_id obj )
 void core_tsk_unlink( tsk_id tsk, unsigned event )
 {
 	ctx_id ctx = tsk->sp;
-	ctx->r0    = event; // value returned from 'wait' function
+	ctx->r0    = event; // value returned from 'wait' function (wakeup event)
 
 	tsk_id prv = tsk->back;
 	tsk_id nxt = tsk->queue;

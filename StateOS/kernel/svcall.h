@@ -2,7 +2,7 @@
 
     @file    State Machine OS: svcall.h
     @author  Rajmund Szymanski
-    @date    18.12.2015
+    @date    20.12.2015
     @brief   This file contains macro definitions for the Cortex-M devices.
 
  ******************************************************************************
@@ -58,51 +58,51 @@ extern "C" {
 static inline __attribute__((always_inline))
 unsigned SVC_0( unsigned f )
 {
-	register unsigned IP __asm("ip") = f;
 	register unsigned R0 __asm("r0");
-	__asm volatile ( "svc 0" : "=r"(R0) : "r"(IP) : "lr","cc","memory" );
+	register unsigned IP __asm("ip") = f;
+	__asm volatile ( "svc 0" : "=r"(R0) : "r"(IP) : "memory" );
 	return R0;
 }
 
 static inline __attribute__((always_inline))
 unsigned SVC_1( unsigned f, unsigned a )
 {
-	register unsigned IP __asm("ip") = f;
 	register unsigned R0 __asm("r0") = a;
-	__asm volatile ( "svc 0" : "=r"(R0) : "r"(IP),"r"(R0) : "lr","cc","memory" );
+	register unsigned IP __asm("ip") = f;
+	__asm volatile ( "svc 0" : "+r"(R0) : "r"(IP) : "memory" );
 	return R0;
 }
 
 static inline __attribute__((always_inline))
 unsigned SVC_2( unsigned f, unsigned a, unsigned b )
 {
-	register unsigned IP __asm("ip") = f;
 	register unsigned R0 __asm("r0") = a;
 	register unsigned R1 __asm("r1") = b;
-	__asm volatile ( "svc 0" : "=r"(R0) : "r"(IP),"r"(R0),"r"(R1) : "lr","cc","memory" );
+	register unsigned IP __asm("ip") = f;
+	__asm volatile ( "svc 0" : "+r"(R0) : "r"(R1),"r"(IP) : "memory" );
 	return R0;
 }
 
 static inline __attribute__((always_inline))
 unsigned SVC_3( unsigned f, unsigned a, unsigned b, unsigned c )
 {
-	register unsigned IP __asm("ip") = f;
 	register unsigned R0 __asm("r0") = a;
 	register unsigned R1 __asm("r1") = b;
 	register unsigned R2 __asm("r2") = c;
-	__asm volatile ( "svc 0" : "=r"(R0) : "r"(IP),"r"(R0),"r"(R1),"r"(R2) : "lr","cc","memory" );
+	register unsigned IP __asm("ip") = f;
+	__asm volatile ( "svc 0" : "+r"(R0) : "r"(R1),"r"(R2),"r"(IP) : "memory" );
 	return R0;
 }
 
 static inline __attribute__((always_inline))
 unsigned SVC_4( unsigned f, unsigned a, unsigned b, unsigned c, unsigned d )
 {
-	register unsigned IP __asm("ip") = f;
 	register unsigned R0 __asm("r0") = a;
 	register unsigned R1 __asm("r1") = b;
 	register unsigned R2 __asm("r2") = c;
 	register unsigned R3 __asm("r3") = d;
-	__asm volatile ( "svc 0" : "=r"(R0) : "r"(IP),"r"(R0),"r"(R1),"r"(R2),"r"(R3) : "lr","cc","memory" );
+	register unsigned IP __asm("ip") = f;
+	__asm volatile ( "svc 0" : "+r"(R0) : "r"(R1),"r"(R2),"r"(R3),"r"(IP) : "memory" );
 	return R0;
 }
 

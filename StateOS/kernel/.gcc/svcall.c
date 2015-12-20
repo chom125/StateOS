@@ -2,7 +2,7 @@
 
     @file    State Machine OS: svcall.c
     @author  Rajmund Szymanski
-    @date    18.12.2015
+    @date    20.12.2015
     @brief   This file defines SVC_Handler for STM32 uC.
 
  ******************************************************************************
@@ -32,11 +32,11 @@ void SVC_Handler( void )
 {
 	__asm volatile
 	(
-"	push      { r4, lr } \n"
-"	mrs   r4,   PSP      \n"
-"	blx   ip             \n"
-"	str   r0, [ r4 ]     \n"
-"	pop       { r4, pc } \n"
+"	push {lr}      \n"
+"	blx   ip       \n"
+"	mrs   r3,  PSP \n"
+"	str   r0, [r3] \n"
+"	pop  {pc}      \n"
 	);
 }
 
