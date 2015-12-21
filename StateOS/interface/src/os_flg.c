@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_flg.c
     @author  Rajmund Szymanski
-    @date    18.12.2015
+    @date    21.12.2015
     @brief   This file provides set of functions for StateOS.
 
  ******************************************************************************
@@ -52,7 +52,7 @@ void svc_flg_kill( flg_id flg )
 }
 
 /* -------------------------------------------------------------------------- */
-__attribute__((always_inline)) static inline
+static inline __attribute__((always_inline))
 unsigned priv_flg_wait( flg_id flg, unsigned flags, unsigned mode, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {

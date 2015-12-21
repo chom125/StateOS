@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_sem.c
     @author  Rajmund Szymanski
-    @date    18.12.2015
+    @date    21.12.2015
     @brief   This file provides set of functions for StateOS.
 
  ******************************************************************************
@@ -54,7 +54,7 @@ void svc_sem_kill( sem_id sem )
 }
 
 /* -------------------------------------------------------------------------- */
-__attribute__((always_inline)) static inline
+static inline __attribute__((always_inline))
 unsigned priv_sem_wait( sem_id sem, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
@@ -84,7 +84,7 @@ unsigned svc_sem_waitFor( sem_id sem, unsigned delay )
 }
 
 /* -------------------------------------------------------------------------- */
-__attribute__((always_inline)) static inline
+static inline __attribute__((always_inline))
 unsigned priv_sem_send( sem_id sem, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {

@@ -33,7 +33,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-__attribute__(( naked ))
+__attribute__((naked))
 void PendSV_Handler( void )
 {
 	__asm volatile

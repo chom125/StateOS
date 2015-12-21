@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_bar.c
     @author  Rajmund Szymanski
-    @date    18.12.2015
+    @date    21.12.2015
     @brief   This file provides set of functions for StateOS.
 
  ******************************************************************************
@@ -55,7 +55,7 @@ void svc_bar_kill( bar_id bar )
 }
 
 /* -------------------------------------------------------------------------- */
-__attribute__((always_inline)) static inline
+static inline __attribute__((always_inline))
 unsigned priv_bar_wait( bar_id bar, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
