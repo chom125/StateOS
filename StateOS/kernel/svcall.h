@@ -2,7 +2,7 @@
 
     @file    State Machine OS: svcall.h
     @author  Rajmund Szymanski
-    @date    20.12.2015
+    @date    21.12.2015
     @brief   This file contains macro definitions for the Cortex-M devices.
 
  ******************************************************************************
@@ -34,11 +34,11 @@ extern "C" {
 
 /* Some useful macros ------------------------------------------------------- */
 
-#define __SVC_0(f)         SVC_0((unsigned)f)
-#define __SVC_1(f,a)       SVC_1((unsigned)f,(unsigned)a)
-#define __SVC_2(f,a,b)     SVC_2((unsigned)f,(unsigned)a,(unsigned)b)
-#define __SVC_3(f,a,b,c)   SVC_3((unsigned)f,(unsigned)a,(unsigned)b,(unsigned)c)
-#define __SVC_4(f,a,b,c,d) SVC_4((unsigned)f,(unsigned)a,(unsigned)b,(unsigned)c,(unsigned)d)
+#define __SVC_0(f)         SVC_0((unsigned)(f))
+#define __SVC_1(f,a)       SVC_1((unsigned)(f),(unsigned)(a))
+#define __SVC_2(f,a,b)     SVC_2((unsigned)(f),(unsigned)(a),(unsigned)(b))
+#define __SVC_3(f,a,b,c)   SVC_3((unsigned)(f),(unsigned)(a),(unsigned)(b),(unsigned)(c))
+#define __SVC_4(f,a,b,c,d) SVC_4((unsigned)(f),(unsigned)(a),(unsigned)(b),(unsigned)(c),(unsigned)(d))
 
 /* -------------------------------------------------------------------------- */
 
@@ -49,7 +49,7 @@ extern "C" {
 
 /* -------------------------------------------------------------------------- */
 
-#define SVCall(f,...)      VA_SVCN(VA_ARGC(__VA_ARGS__))(f,##__VA_ARGS__)
+#define  SVCall(f,...)     VA_SVCN(VA_ARGC(__VA_ARGS__))(f,##__VA_ARGS__)
 
 /* -------------------------------------------------------------------------- */
 
@@ -60,7 +60,7 @@ unsigned SVC_0( unsigned f )
 {
 	register unsigned R0 __asm("r0");
 	register unsigned IP __asm("ip") = f;
-	__asm volatile ( "svc 0" : "=r"(R0) : "r"(IP) : "memory" );
+	__asm volatile ( "svc %[n]" : "=r"(R0) : "r"(IP),[n]"n"(0) : "memory" );
 	return R0;
 }
 
@@ -69,7 +69,7 @@ unsigned SVC_1( unsigned f, unsigned a )
 {
 	register unsigned R0 __asm("r0") = a;
 	register unsigned IP __asm("ip") = f;
-	__asm volatile ( "svc 0" : "+r"(R0) : "r"(IP) : "memory" );
+	__asm volatile ( "svc %[n]" : "+r"(R0) : "r"(IP),[n]"n"(0) : "memory" );
 	return R0;
 }
 
@@ -79,7 +79,7 @@ unsigned SVC_2( unsigned f, unsigned a, unsigned b )
 	register unsigned R0 __asm("r0") = a;
 	register unsigned R1 __asm("r1") = b;
 	register unsigned IP __asm("ip") = f;
-	__asm volatile ( "svc 0" : "+r"(R0) : "r"(R1),"r"(IP) : "memory" );
+	__asm volatile ( "svc %[n]" : "+r"(R0) : "r"(R1),"r"(IP),[n]"n"(0) : "memory" );
 	return R0;
 }
 
@@ -90,7 +90,7 @@ unsigned SVC_3( unsigned f, unsigned a, unsigned b, unsigned c )
 	register unsigned R1 __asm("r1") = b;
 	register unsigned R2 __asm("r2") = c;
 	register unsigned IP __asm("ip") = f;
-	__asm volatile ( "svc 0" : "+r"(R0) : "r"(R1),"r"(R2),"r"(IP) : "memory" );
+	__asm volatile ( "svc %[n]" : "+r"(R0) : "r"(R1),"r"(R2),"r"(IP),[n]"n"(0) : "memory" );
 	return R0;
 }
 
@@ -102,7 +102,7 @@ unsigned SVC_4( unsigned f, unsigned a, unsigned b, unsigned c, unsigned d )
 	register unsigned R2 __asm("r2") = c;
 	register unsigned R3 __asm("r3") = d;
 	register unsigned IP __asm("ip") = f;
-	__asm volatile ( "svc 0" : "+r"(R0) : "r"(R1),"r"(R2),"r"(R3),"r"(IP) : "memory" );
+	__asm volatile ( "svc %[n]" : "+r"(R0) : "r"(R1),"r"(R2),"r"(R3),"r"(IP),[n]"n"(0) : "memory" );
 	return R0;
 }
 
