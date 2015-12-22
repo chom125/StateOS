@@ -34,10 +34,16 @@
 extern "C" {
 #endif
 
-/* Some useful macros ------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
 
 #define GLUE( a, b, c )            a##b##c
 #define  CAT( a, b, c )       GLUE(a, b, c)
+
+/* -------------------------------------------------------------------------- */
+
+#ifndef  __CORTEX_M
+#error   osconfig.h: Include CMSIS device peripheral access layer header file!
+#endif
 
 /* -------------------------------------------------------------------------- */
 
@@ -124,12 +130,6 @@ extern "C" {
 
 extern   char               __initial_sp[];
 #define  MAIN_SP            __initial_sp
-
-/* -------------------------------------------------------------------------- */
-
-#ifndef  __CORTEX_M
-#error   osconfig.h: Include CMSIS device peripheral access layer header file!
-#endif
 
 /* -------------------------------------------------------------------------- */
 
