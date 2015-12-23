@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_box.h
     @author  Rajmund Szymanski
-    @date    18.12.2015
+    @date    23.12.2015
     @brief   This file contains definitions for StateOS.
 
  ******************************************************************************
@@ -55,60 +55,60 @@ extern "C" {
 
 // utworzenie skrzynki fifo o rozmiarze 'limit' i wielkoœci komunikatu 'size'
 // zwraca adres utworzonego obiektu, lub 0
-              box_id   svc_box_create( unsigned limit, unsigned size );
-static inline box_id       box_create( unsigned limit, unsigned size ) { return (box_id) SVCall(svc_box_create, limit, size); }
+              box_id   BOX_create( unsigned limit, unsigned size );
+static inline box_id   box_create( unsigned limit, unsigned size ) { return (box_id) OSCall(BOX_create, limit, size); }
 
 // reset obiektu 'box'
 // wszystkie procesy oczekuj¹ce zostaj¹ wybudzone
 // zostaje do nich wys³any komunikat E_STOPPED
-              void     svc_box_kill( box_id box );
-static inline void         box_kill( box_id box ) { SVCall(svc_box_kill, box); }
+              void     BOX_kill( box_id box );
+static inline void     box_kill( box_id box ) { OSCall(BOX_kill, box); }
 
 // zawieszenie wykonywania aktualnego procesu do czasu 'time'
 // lub do odebrania porcji danych 'data' z obiektu 'box'
 // zwraca E_SUCCESS, E_STOPPED lub E_TIMEOUT
-              unsigned svc_box_waitUntil( box_id box, void *data, unsigned time );
-static inline unsigned     box_waitUntil( box_id box, void *data, unsigned time ) { return SVCall(svc_box_waitUntil, box, data, time); }
+              unsigned BOX_waitUntil( box_id box, void *data, unsigned time );
+static inline unsigned box_waitUntil( box_id box, void *data, unsigned time ) { return OSCall(BOX_waitUntil, box, data, time); }
 
 // zawieszenie wykonywania aktualnego procesu na czas 'delay'
 // lub do odebrania porcji danych 'data' z obiektu 'box'
 // zwraca E_SUCCESS, E_STOPPED lub E_TIMEOUT
-              unsigned svc_box_waitFor( box_id box, void *data, unsigned delay );
-static inline unsigned     box_waitFor( box_id box, void *data, unsigned delay ) { return SVCall(svc_box_waitFor, box, data, delay); }
+              unsigned BOX_waitFor( box_id box, void *data, unsigned delay );
+static inline unsigned box_waitFor( box_id box, void *data, unsigned delay ) { return OSCall(BOX_waitFor, box, data, delay); }
 
 // zawieszenie wykonywania aktualnego procesu
 // do czasu odebrania porcji danych 'data' z obiektu 'box'
 // zwraca E_SUCCESS lub E_STOPPED
-static inline unsigned     box_wait( box_id box, void *data ) { return box_waitFor(box, data, INFINITE); }
+static inline unsigned box_wait( box_id box, void *data ) { return box_waitFor(box, data, INFINITE); }
 
 // nie zawiesza wykonywania aktualnego procesu
 // odebiera porcjê danych 'data' z obiektu 'box' (jeœli dane s¹ dostêpne)
 // zwraca E_SUCCESS lub E_TIMEOUT
-static inline unsigned     box_take   ( box_id box, void *data ) { return box_waitFor(box, data, IMMEDIATE); }
-static inline unsigned     box_takeISR( box_id box, void *data ) { return box_waitFor(box, data, IMMEDIATE); }
+static inline unsigned box_take   ( box_id box, void *data ) { return box_waitFor(box, data, IMMEDIATE); }
+static inline unsigned box_takeISR( box_id box, void *data ) { return box_waitFor(box, data, IMMEDIATE); }
 
 // zawieszenie wykonywania aktualnego procesu do czasu 'time'
 // lub do wys³ania porcji danych 'data' do obiektu 'box'
 // zwraca E_SUCCESS, E_STOPPED lub E_TIMEOUT
-              unsigned svc_box_sendUntil( box_id box, void *data, unsigned time );
-static inline unsigned     box_sendUntil( box_id box, void *data, unsigned time ) { return SVCall(svc_box_sendUntil, box, data, time); }
+              unsigned BOX_sendUntil( box_id box, void *data, unsigned time );
+static inline unsigned box_sendUntil( box_id box, void *data, unsigned time ) { return OSCall(BOX_sendUntil, box, data, time); }
 
 // zawieszenie wykonywania aktualnego procesu na czas 'delay'
 // lub do wys³ania porcji danych 'data' do obiektu 'box'
 // zwraca E_SUCCESS, E_STOPPED lub E_TIMEOUT
-              unsigned svc_box_sendFor( box_id box, void *data, unsigned delay );
-static inline unsigned     box_sendFor( box_id box, void *data, unsigned delay ) { return SVCall(svc_box_sendFor, box, data, delay); }
+              unsigned BOX_sendFor( box_id box, void *data, unsigned delay );
+static inline unsigned box_sendFor( box_id box, void *data, unsigned delay ) { return OSCall(BOX_sendFor, box, data, delay); }
 
 // zawieszenie wykonywania aktualnego procesu
 // do czasu wys³ania porcji danych 'data' do obiektu 'box'
 // zwraca E_SUCCESS lub E_STOPPED
-static inline unsigned     box_send( box_id box, void *data ) { return box_sendFor(box, data, INFINITE); }
+static inline unsigned box_send( box_id box, void *data ) { return box_sendFor(box, data, INFINITE); }
 
 // nie zawiesza wykonywania aktualnego procesu
 // wysy³a porcjê danych 'data' do obiektu 'box' (jeœli jest mo¿liwe wys³anie)
 // zwraca E_SUCCESS lub E_TIMEOUT
-static inline unsigned     box_give   ( box_id box, void *data ) { return box_sendFor(box, data, IMMEDIATE); }
-static inline unsigned     box_giveISR( box_id box, void *data ) { return box_sendFor(box, data, IMMEDIATE); }
+static inline unsigned box_give   ( box_id box, void *data ) { return box_sendFor(box, data, IMMEDIATE); }
+static inline unsigned box_giveISR( box_id box, void *data ) { return box_sendFor(box, data, IMMEDIATE); }
 
 /* -------------------------------------------------------------------------- */
 

@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_sem.c
     @author  Rajmund Szymanski
-    @date    21.12.2015
+    @date    23.12.2015
     @brief   This file provides set of functions for StateOS.
 
  ******************************************************************************
@@ -29,7 +29,7 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-sem_id svc_sem_create( unsigned limit )
+sem_id SEM_create( unsigned limit )
 /* -------------------------------------------------------------------------- */
 {
 	sem_id sem;
@@ -45,7 +45,7 @@ sem_id svc_sem_create( unsigned limit )
 }
 
 /* -------------------------------------------------------------------------- */
-void svc_sem_kill( sem_id sem )
+void SEM_kill( sem_id sem )
 /* -------------------------------------------------------------------------- */
 {
 	sem->count = 0;
@@ -55,7 +55,7 @@ void svc_sem_kill( sem_id sem )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned priv_sem_wait( sem_id sem, unsigned time, unsigned(*wait)() )
+unsigned SEM_wait( sem_id sem, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
@@ -70,22 +70,22 @@ unsigned priv_sem_wait( sem_id sem, unsigned time, unsigned(*wait)() )
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned svc_sem_waitUntil( sem_id sem, unsigned time )
+unsigned SEM_waitUntil( sem_id sem, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return priv_sem_wait(sem, time, core_tsk_waitUntil);
+	return SEM_wait(sem, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned svc_sem_waitFor( sem_id sem, unsigned delay )
+unsigned SEM_waitFor( sem_id sem, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return priv_sem_wait(sem, delay, core_tsk_waitFor);
+	return SEM_wait(sem, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned priv_sem_send( sem_id sem, unsigned time, unsigned(*wait)() )
+unsigned SEM_send( sem_id sem, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
@@ -100,17 +100,17 @@ unsigned priv_sem_send( sem_id sem, unsigned time, unsigned(*wait)() )
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned svc_sem_sendUntil( sem_id sem, unsigned time )
+unsigned SEM_sendUntil( sem_id sem, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return priv_sem_send(sem, time, core_tsk_waitUntil);
+	return SEM_send(sem, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned svc_sem_sendFor( sem_id sem, unsigned delay )
+unsigned SEM_sendFor( sem_id sem, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return priv_sem_send(sem, delay, core_tsk_waitFor);
+	return SEM_send(sem, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */

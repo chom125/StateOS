@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_cnd.c
     @author  Rajmund Szymanski
-    @date    21.12.2015
+    @date    23.12.2015
     @brief   This file provides set of functions for StateOS.
 
  ******************************************************************************
@@ -29,7 +29,7 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-cnd_id svc_cnd_create( void )
+cnd_id CND_create( void )
 /* -------------------------------------------------------------------------- */
 {
 	cnd_id cnd;
@@ -40,7 +40,7 @@ cnd_id svc_cnd_create( void )
 }
 
 /* -------------------------------------------------------------------------- */
-void svc_cnd_kill( cnd_id cnd )
+void CND_kill( cnd_id cnd )
 /* -------------------------------------------------------------------------- */
 {
 	core_all_wakeup(cnd, E_STOPPED);
@@ -48,13 +48,13 @@ void svc_cnd_kill( cnd_id cnd )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned priv_cnd_wait( cnd_id cnd, mtx_id mtx, unsigned time, unsigned(*wait)() )
+unsigned CND_wait( cnd_id cnd, mtx_id mtx, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event;
 
 	if ((event = mtx_give(mtx))           == E_SUCCESS)
-	if ((event = SVCall(wait, cnd, time)) == E_SUCCESS)
+	if ((event = OSCall(wait, cnd, time)) == E_SUCCESS)
 	     event = mtx_wait(mtx);
 
 	return event;
@@ -64,18 +64,18 @@ unsigned priv_cnd_wait( cnd_id cnd, mtx_id mtx, unsigned time, unsigned(*wait)()
 unsigned cnd_waitUntil( cnd_id cnd, mtx_id mtx, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return priv_cnd_wait(cnd, mtx, time, core_tsk_waitUntil);
+	return CND_wait(cnd, mtx, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
 unsigned cnd_waitFor( cnd_id cnd, mtx_id mtx, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return priv_cnd_wait(cnd, mtx, delay, core_tsk_waitFor);
+	return CND_wait(cnd, mtx, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
-void svc_cnd_give( cnd_id cnd, bool all )
+void CND_give( cnd_id cnd, bool all )
 /* -------------------------------------------------------------------------- */
 {
 	if (all) core_all_wakeup(cnd, E_SUCCESS);

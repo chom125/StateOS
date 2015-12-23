@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_flg.c
     @author  Rajmund Szymanski
-    @date    21.12.2015
+    @date    23.12.2015
     @brief   This file provides set of functions for StateOS.
 
  ******************************************************************************
@@ -29,7 +29,7 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-flg_id svc_flg_create( unsigned mask )
+flg_id FLG_create( unsigned mask )
 /* -------------------------------------------------------------------------- */
 {
 	flg_id flg;
@@ -45,7 +45,7 @@ flg_id svc_flg_create( unsigned mask )
 }
 
 /* -------------------------------------------------------------------------- */
-void svc_flg_kill( flg_id flg )
+void FLG_kill( flg_id flg )
 /* -------------------------------------------------------------------------- */
 {
 	core_all_wakeup(flg, E_STOPPED);
@@ -53,7 +53,7 @@ void svc_flg_kill( flg_id flg )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned priv_flg_wait( flg_id flg, unsigned flags, unsigned mode, unsigned time, unsigned(*wait)() )
+unsigned FLG_wait( flg_id flg, unsigned flags, unsigned mode, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
@@ -71,21 +71,21 @@ unsigned priv_flg_wait( flg_id flg, unsigned flags, unsigned mode, unsigned time
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned svc_flg_waitUntil( flg_id flg, unsigned flags, unsigned mode, unsigned time )
+unsigned FLG_waitUntil( flg_id flg, unsigned flags, unsigned mode, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return priv_flg_wait(flg, flags, mode, time, core_tsk_waitUntil);
+	return FLG_wait(flg, flags, mode, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned svc_flg_waitFor( flg_id flg, unsigned flags, unsigned mode, unsigned delay )
+unsigned FLG_waitFor( flg_id flg, unsigned flags, unsigned mode, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return priv_flg_wait(flg, flags, mode, delay, core_tsk_waitFor);
+	return FLG_wait(flg, flags, mode, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
-void svc_flg_give( flg_id flg, unsigned flags )
+void FLG_give( flg_id flg, unsigned flags )
 /* -------------------------------------------------------------------------- */
 {
 	flags = flg->flags |= flags;

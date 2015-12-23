@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_evt.h
     @author  Rajmund Szymanski
-    @date    18.12.2015
+    @date    23.12.2015
     @brief   This file contains definitions for StateOS.
 
  ******************************************************************************
@@ -50,36 +50,36 @@ extern "C" {
 
 // utworzenie obiektu typu zdarzenie
 // zwraca adres utworzonego obiektu, lub 0
-              evt_id   svc_evt_create( void );
-static inline evt_id       evt_create( void ) { return (evt_id) SVCall(svc_evt_create); }
+              evt_id   EVT_create( void );
+static inline evt_id   evt_create( void ) { return (evt_id) OSCall(EVT_create); }
 
 // reset obiektu 'evt'
 // wszystkie procesy oczekuj¹ce zostaj¹ wybudzone
 // zostaje do nich wys³any komunikat E_STOPPED
-              void     svc_evt_kill( evt_id evt );
-static inline void         evt_kill( evt_id evt ) { SVCall(svc_evt_kill, evt); }
+              void     EVT_kill( evt_id evt );
+static inline void     evt_kill( evt_id evt ) { OSCall(EVT_kill, evt); }
 
 // zawieszenie wykonywania aktualnego procesu do czasu 'time'
 // lub do wybudzenia przez obiekt 'evt'
 // zwraca odebrany komunikat o zdarzeniu, E_STOPPED lub E_TIMEOUT
-              unsigned svc_evt_waitUntil( evt_id evt, unsigned time );
-static inline unsigned     evt_waitUntil( evt_id evt, unsigned time ) { return SVCall(svc_evt_waitUntil, evt, time); }
+              unsigned EVT_waitUntil( evt_id evt, unsigned time );
+static inline unsigned evt_waitUntil( evt_id evt, unsigned time ) { return OSCall(EVT_waitUntil, evt, time); }
 
 // zawieszenie wykonywania aktualnego procesu na czas 'delay'
 // lub do wybudzenia przez obiekt 'evt'
 // zwraca odebrany komunikat o zdarzeniu, E_STOPPED lub E_TIMEOUT
-              unsigned svc_evt_waitFor( evt_id evt, unsigned delay );
-static inline unsigned     evt_waitFor( evt_id evt, unsigned delay ) { return SVCall(svc_evt_waitFor, evt, delay); }
+              unsigned EVT_waitFor( evt_id evt, unsigned delay );
+static inline unsigned evt_waitFor( evt_id evt, unsigned delay ) { return OSCall(EVT_waitFor, evt, delay); }
 
 // zawieszenie wykonywania aktualnego procesu
 // do czasu wybudzenia przez obiekt 'evt'
 // zwraca odebrany komunikat o zdarzeniu lub E_STOPPED
-static inline unsigned     evt_wait( evt_id evt ) { return evt_waitFor(evt, INFINITE); }
+static inline unsigned evt_wait( evt_id evt ) { return evt_waitFor(evt, INFINITE); }
 
 // wys³anie komunikatu o zdarzeniu 'event' do obiektu 'evt'
-              void     svc_evt_give   ( evt_id evt, unsigned event );
-static inline void         evt_give   ( evt_id evt, unsigned event ) { SVCall(svc_evt_give, evt, event); }
-static inline void         evt_giveISR( evt_id evt, unsigned event ) { evt_give(evt, event); }
+              void     EVT_give   ( evt_id evt, unsigned event );
+static inline void     evt_give   ( evt_id evt, unsigned event ) { OSCall(EVT_give, evt, event); }
+static inline void     evt_giveISR( evt_id evt, unsigned event ) { evt_give(evt, event); }
 
 /* -------------------------------------------------------------------------- */
 

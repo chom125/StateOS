@@ -2,7 +2,7 @@
 
     @file    State Machine OS: oscall.c
     @author  Rajmund Szymanski
-    @date    22.12.2015
+    @date    23.12.2015
     @brief   This file defines SVC_Handler for STM32 uC.
 
  ******************************************************************************

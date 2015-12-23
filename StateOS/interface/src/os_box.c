@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_box.c
     @author  Rajmund Szymanski
-    @date    21.12.2015
+    @date    23.12.2015
     @brief   This file provides set of functions for StateOS.
 
  ******************************************************************************
@@ -29,7 +29,7 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-box_id svc_box_create( unsigned limit, unsigned size )
+box_id BOX_create( unsigned limit, unsigned size )
 /* -------------------------------------------------------------------------- */
 {
 	box_id box;
@@ -47,7 +47,7 @@ box_id svc_box_create( unsigned limit, unsigned size )
 }
 
 /* -------------------------------------------------------------------------- */
-void svc_box_kill( box_id box )
+void BOX_kill( box_id box )
 /* -------------------------------------------------------------------------- */
 {
 	box->count = 0;
@@ -59,7 +59,7 @@ void svc_box_kill( box_id box )
 
 /* -------------------------------------------------------------------------- */
 static
-void priv_box_get( box_id box, void *data )
+void BOX_get( box_id box, void *data )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned i;
@@ -72,7 +72,7 @@ void priv_box_get( box_id box, void *data )
 
 /* -------------------------------------------------------------------------- */
 static
-void priv_box_put( box_id box, void *data )
+void BOX_put( box_id box, void *data )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned i;
@@ -85,7 +85,7 @@ void priv_box_put( box_id box, void *data )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned priv_box_wait( box_id box, void *data, unsigned time, unsigned(*wait)() )
+unsigned BOX_wait( box_id box, void *data, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
@@ -98,12 +98,12 @@ unsigned priv_box_wait( box_id box, void *data, unsigned time, unsigned(*wait)()
 	}
 	else
 	{
-		priv_box_get(box, data);
+		BOX_get(box, data);
 
 	    tsk_id tsk = core_one_wakeup(box, E_SUCCESS);
 
 	    if (tsk)
-			priv_box_put(box, tsk->data);
+			BOX_put(box, tsk->data);
 	    else
 			box->count--;
 	}
@@ -112,22 +112,22 @@ unsigned priv_box_wait( box_id box, void *data, unsigned time, unsigned(*wait)()
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned svc_box_waitUntil( box_id box, void *data, unsigned time )
+unsigned BOX_waitUntil( box_id box, void *data, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return priv_box_wait(box, data, time, core_tsk_waitUntil);
+	return BOX_wait(box, data, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned svc_box_waitFor( box_id box, void *data, unsigned delay )
+unsigned BOX_waitFor( box_id box, void *data, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return priv_box_wait(box, data, delay, core_tsk_waitFor);
+	return BOX_wait(box, data, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned priv_box_send( box_id box, void *data, unsigned time, unsigned(*wait)() )
+unsigned BOX_send( box_id box, void *data, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
@@ -140,12 +140,12 @@ unsigned priv_box_send( box_id box, void *data, unsigned time, unsigned(*wait)()
 	}
 	else
 	{
-		priv_box_put(box, data);
+		BOX_put(box, data);
 
 	    tsk_id tsk = core_one_wakeup(box, E_SUCCESS);
 
 	    if (tsk)
-			priv_box_get(box, tsk->data);
+			BOX_get(box, tsk->data);
 	    else
 			box->count++;
 	}
@@ -154,17 +154,17 @@ unsigned priv_box_send( box_id box, void *data, unsigned time, unsigned(*wait)()
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned svc_box_sendUntil( box_id box, void *data, unsigned time )
+unsigned BOX_sendUntil( box_id box, void *data, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return priv_box_send(box, data, time, core_tsk_waitUntil);
+	return BOX_send(box, data, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned svc_box_sendFor( box_id box, void *data, unsigned delay )
+unsigned BOX_sendFor( box_id box, void *data, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return priv_box_send(box, data, delay, core_tsk_waitFor);
+	return BOX_send(box, data, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */

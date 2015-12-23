@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_mtx.c
     @author  Rajmund Szymanski
-    @date    21.12.2015
+    @date    23.12.2015
     @brief   This file provides set of functions for StateOS.
 
  ******************************************************************************
@@ -29,7 +29,7 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-mtx_id svc_mtx_create( unsigned type )
+mtx_id MTX_create( unsigned type )
 /* -------------------------------------------------------------------------- */
 {
 	mtx_id mtx;
@@ -46,7 +46,7 @@ mtx_id svc_mtx_create( unsigned type )
 
 /* -------------------------------------------------------------------------- */
 static
-void priv_mtx_link( mtx_id mtx, tsk_id tsk )
+void MTX_link( mtx_id mtx, tsk_id tsk )
 /* -------------------------------------------------------------------------- */
 {
 	mtx->owner = tsk;
@@ -61,7 +61,7 @@ void priv_mtx_link( mtx_id mtx, tsk_id tsk )
 
 /* -------------------------------------------------------------------------- */
 static
-void priv_mtx_unlink( mtx_id mtx )
+void MTX_unlink( mtx_id mtx )
 /* -------------------------------------------------------------------------- */
 {
 	if (mtx->owner)
@@ -83,10 +83,10 @@ void priv_mtx_unlink( mtx_id mtx )
 }
 
 /* -------------------------------------------------------------------------- */
-void svc_mtx_kill( mtx_id mtx )
+void MTX_kill( mtx_id mtx )
 /* -------------------------------------------------------------------------- */
 {
-	priv_mtx_unlink(mtx);
+	MTX_unlink(mtx);
 
 	mtx->count = 0;
 
@@ -95,14 +95,14 @@ void svc_mtx_kill( mtx_id mtx )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned priv_mtx_wait( mtx_id mtx, unsigned time, unsigned(*wait)() )
+unsigned MTX_wait( mtx_id mtx, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_TIMEOUT;
 
 	if (mtx->owner == 0)
 	{
-		priv_mtx_link(mtx, System.cur);
+		MTX_link(mtx, System.cur);
 
 		event = E_SUCCESS;
 	}
@@ -129,21 +129,21 @@ unsigned priv_mtx_wait( mtx_id mtx, unsigned time, unsigned(*wait)() )
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned svc_mtx_waitUntil( mtx_id mtx, unsigned time )
+unsigned MTX_waitUntil( mtx_id mtx, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return priv_mtx_wait(mtx, time, core_tsk_waitUntil);
+	return MTX_wait(mtx, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned svc_mtx_waitFor( mtx_id mtx, unsigned delay )
+unsigned MTX_waitFor( mtx_id mtx, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return priv_mtx_wait(mtx, delay, core_tsk_waitFor);
+	return MTX_wait(mtx, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned svc_mtx_give( mtx_id mtx )
+unsigned MTX_give( mtx_id mtx )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_TIMEOUT;
@@ -156,8 +156,8 @@ unsigned svc_mtx_give( mtx_id mtx )
 		}
 		else
 		{
-			priv_mtx_unlink(mtx);
-			priv_mtx_link(mtx, core_one_wakeup(mtx, E_SUCCESS));
+			MTX_unlink(mtx);
+			MTX_link(mtx, core_one_wakeup(mtx, E_SUCCESS));
 		}
 
 		event = E_SUCCESS;

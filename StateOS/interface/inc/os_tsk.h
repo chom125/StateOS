@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_tsk.h
     @author  Rajmund Szymanski
-    @date    18.12.2015
+    @date    23.12.2015
     @brief   This file contains definitions for StateOS.
 
  ******************************************************************************
@@ -73,62 +73,62 @@ extern "C" {
 // utworzenie przestrzeni roboczej dla procesu ze stosem 'size'
 // i uruchomienie z priorytetem 'prio', od stanu pocz¹tkowego 'state'
 // zwraca adres TCB (task control block) utworzonego procesu
-              tsk_id   svc_tsk_create( unsigned prio, fun_id state, unsigned size );
-static inline tsk_id       tsk_create( unsigned prio, fun_id state, unsigned size ) { return (tsk_id) SVCall(svc_tsk_create, prio, state, size); }
+              tsk_id   TSK_create( unsigned prio, fun_id state, unsigned size );
+static inline tsk_id   tsk_create( unsigned prio, fun_id state, unsigned size ) { return (tsk_id) OSCall(TSK_create, prio, state, size); }
 
 // utworzenie przestrzeni roboczej dla procesu ze stosem 'OS_STACK_SIZE'
 // i uruchomienie z priorytetem 'prio', od stanu pocz¹tkowego 'state'
 // zwraca adres TCB (task control block) utworzonego procesu
-static inline tsk_id       tsk_new( unsigned prio, fun_id state ) { return tsk_create(prio, state, OS_STACK_SIZE); }
+static inline tsk_id   tsk_new( unsigned prio, fun_id state ) { return tsk_create(prio, state, OS_STACK_SIZE); }
 
 // reinicjacja i uruchomienie procesu 'tsk'
-              void     svc_tsk_start( tsk_id tsk );
-static inline void         tsk_start( tsk_id tsk ) { SVCall(svc_tsk_start, tsk); }
+              void     TSK_start( tsk_id tsk );
+static inline void     tsk_start( tsk_id tsk ) { OSCall(TSK_start, tsk); }
 
 // zatrzymanie aktualnego procesu (usuniêcie z listy zadañ)
-              void     svc_tsk_stop( void );
-static inline void         tsk_stop( void ) { SVCall(svc_tsk_stop); }
+              void     TSK_stop( void );
+static inline void     tsk_stop( void ) { OSCall(TSK_stop); }
 
 // zatrzymanie procesu 'tsk'
-              void     svc_tsk_kill( tsk_id tsk );
-static inline void         tsk_kill( tsk_id tsk ) { SVCall(svc_tsk_kill, tsk); }
+              void     TSK_kill( tsk_id tsk );
+static inline void     tsk_kill( tsk_id tsk ) { OSCall(TSK_kill, tsk); }
 
 // przekazanie sterowania do schedulera (nastêpnego procesu)
-static inline void         tsk_pass ( void ) { SVCall(core_ctx_switch); }
-static inline void         tsk_yield( void ) { SVCall(core_ctx_switch); }
+static inline void     tsk_pass ( void ) { OSCall(core_ctx_switch); }
+static inline void     tsk_yield( void ) { OSCall(core_ctx_switch); }
 
 // przekazanie sterowania do schedulera (nastêpnego procesu)
 // restart procesu ze zmian¹ stanu/procedury wykonywanej przez proces
-              void         tsk_flip( fun_id state ) __noreturn;
+              void     tsk_flip( fun_id state ) __noreturn;
 
 // ustawienie priorytetu aktualnego procesu z ewentualnym przekazaniem
 // sterowania do innego procesu (o wy¿szym priorytecie)
-              void     svc_tsk_prio( unsigned prio );
-static inline void         tsk_prio( unsigned prio ) { SVCall(svc_tsk_prio, prio); }
+              void     TSK_prio( unsigned prio );
+static inline void     tsk_prio( unsigned prio ) { OSCall(TSK_prio, prio); }
 
 // zawieszenie wykonywania aktualnego procesu do czasu 'time'
-              unsigned svc_tsk_sleepUntil( unsigned time );
-static inline unsigned     tsk_sleepUntil( unsigned time ) { return SVCall(svc_tsk_sleepUntil, time); }
+              unsigned TSK_sleepUntil( unsigned time );
+static inline unsigned tsk_sleepUntil( unsigned time ) { return OSCall(TSK_sleepUntil, time); }
 
 // zawieszenie wykonywania aktualnego procesu na czas 'delay'
-              unsigned svc_tsk_sleepFor( unsigned delay );
-static inline unsigned     tsk_sleepFor( unsigned delay ) { return SVCall(svc_tsk_sleepFor, delay); }
+              unsigned TSK_sleepFor( unsigned delay );
+static inline unsigned tsk_sleepFor( unsigned delay ) { return OSCall(TSK_sleepFor, delay); }
 
 // zawieszenie wykonywania aktualnego procesu
-static inline unsigned     tsk_sleep( void ) { return tsk_sleepFor(INFINITE); }
+static inline unsigned tsk_sleep( void ) { return tsk_sleepFor(INFINITE); }
 
 // zawieszenie wykonywania aktualnego procesu na czas 'delay'
 // (delay != 0) => przekazanie sterowania do schedulera
-static inline unsigned     tsk_delay( unsigned delay ) { return tsk_sleepFor(delay); }
+static inline unsigned tsk_delay( unsigned delay ) { return tsk_sleepFor(delay); }
 
 // zawieszenie wykonywania aktualnego procesu na czas nieokreœlony
 // i przekazanie sterowania do schedulera
-static inline unsigned     tsk_suspend( void ) { return tsk_sleep(); }
+static inline unsigned tsk_suspend( void ) { return tsk_sleep(); }
 
 // wznowienie wykonywania zawieszonego procesu 'tsk' z komunikatem 'event'
-              void     svc_tsk_resume   ( tsk_id tsk, unsigned event );
-static inline void         tsk_resume   ( tsk_id tsk, unsigned event ) { SVCall(svc_tsk_resume, tsk, event); }
-static inline void         tsk_resumeISR( tsk_id tsk, unsigned event ) { tsk_resume(tsk, event); }
+              void     TSK_resume   ( tsk_id tsk, unsigned event );
+static inline void     tsk_resume   ( tsk_id tsk, unsigned event ) { OSCall(TSK_resume, tsk, event); }
+static inline void     tsk_resumeISR( tsk_id tsk, unsigned event ) { tsk_resume(tsk, event); }
 
 
 /* -------------------------------------------------------------------------- */

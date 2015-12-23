@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_tmr.c
     @author  Rajmund Szymanski
-    @date    21.12.2015
+    @date    23.12.2015
     @brief   This file provides set of functions for StateOS.
 
  ******************************************************************************
@@ -29,7 +29,7 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-tmr_id svc_tmr_create( void )
+tmr_id TMR_create( void )
 /* -------------------------------------------------------------------------- */
 {
 	tmr_id tmr;
@@ -40,7 +40,7 @@ tmr_id svc_tmr_create( void )
 }
 
 /* -------------------------------------------------------------------------- */
-void svc_tmr_kill( tmr_id tmr )
+void TMR_kill( tmr_id tmr )
 /* -------------------------------------------------------------------------- */
 {
 	if (tmr->id != ID_STOPPED)
@@ -52,7 +52,7 @@ void svc_tmr_kill( tmr_id tmr )
 
 /* -------------------------------------------------------------------------- */
 static
-void priv_tmr_start( tmr_id tmr )
+void TMR_start( tmr_id tmr )
 /* -------------------------------------------------------------------------- */
 {
 	if (tmr->id != ID_STOPPED)
@@ -61,7 +61,7 @@ void priv_tmr_start( tmr_id tmr )
 }
 
 /* -------------------------------------------------------------------------- */
-void svc_tmr_startUntil( tmr_id tmr, unsigned time, fun_id proc )
+void TMR_startUntil( tmr_id tmr, unsigned time, fun_id proc )
 /* -------------------------------------------------------------------------- */
 {
 	tmr->state  = proc;
@@ -69,11 +69,11 @@ void svc_tmr_startUntil( tmr_id tmr, unsigned time, fun_id proc )
 	tmr->delay  = time - tmr->start;
 	tmr->period = 0;
 
-	priv_tmr_start(tmr);
+	TMR_start(tmr);
 }
 
 /* -------------------------------------------------------------------------- */
-void svc_tmr_startFor( tmr_id tmr, unsigned delay, fun_id proc )
+void TMR_startFor( tmr_id tmr, unsigned delay, fun_id proc )
 /* -------------------------------------------------------------------------- */
 {
 	tmr->state  = proc;
@@ -81,11 +81,11 @@ void svc_tmr_startFor( tmr_id tmr, unsigned delay, fun_id proc )
 	tmr->delay  = delay;
 	tmr->period = 0;
 
-	priv_tmr_start(tmr);
+	TMR_start(tmr);
 }
 
 /* -------------------------------------------------------------------------- */
-void svc_tmr_startPeriodic( tmr_id tmr, unsigned period, fun_id proc )
+void TMR_startPeriodic( tmr_id tmr, unsigned period, fun_id proc )
 /* -------------------------------------------------------------------------- */
 {
 	tmr->state  = proc;
@@ -93,12 +93,12 @@ void svc_tmr_startPeriodic( tmr_id tmr, unsigned period, fun_id proc )
 	tmr->delay  = period;
 	tmr->period = period;
 
-	priv_tmr_start(tmr);
+	TMR_start(tmr);
 }
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned priv_tmr_wait( tmr_id tmr, unsigned time, unsigned(*wait)() )
+unsigned TMR_wait( tmr_id tmr, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
@@ -112,17 +112,17 @@ unsigned priv_tmr_wait( tmr_id tmr, unsigned time, unsigned(*wait)() )
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned svc_tmr_waitUntil( tmr_id tmr, unsigned time )
+unsigned TMR_waitUntil( tmr_id tmr, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return priv_tmr_wait(tmr, time, core_tsk_waitUntil);
+	return TMR_wait(tmr, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned svc_tmr_waitFor( tmr_id tmr, unsigned delay )
+unsigned TMR_waitFor( tmr_id tmr, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return priv_tmr_wait(tmr, delay, core_tsk_waitFor);
+	return TMR_wait(tmr, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */

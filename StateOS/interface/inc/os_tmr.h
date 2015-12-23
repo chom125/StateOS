@@ -2,7 +2,7 @@
 
     @file    State Machine OS: os_tmr.h
     @author  Rajmund Szymanski
-    @date    22.12.2015
+    @date    23.12.2015
     @brief   This file contains definitions for StateOS.
 
  ******************************************************************************
@@ -50,63 +50,63 @@ extern "C" {
 
 // utworzenie obiektu typu zegar
 // zwraca adres utworzonego obiektu, lub 0
-              tmr_id   svc_tmr_create( void );
-static inline tmr_id       tmr_create( void ) { return (tmr_id) SVCall(svc_tmr_create); }
+              tmr_id   TMR_create( void );
+static inline tmr_id   tmr_create( void ) { return (tmr_id) OSCall(TMR_create); }
 
 // zatrzymanie zegara 'tmr'
 // wszystkie procesy oczekuj¹ce zostaj¹ wybudzone
 // zostaje do nich wys³any komunikat E_STOPPED
-              void     svc_tmr_kill( tmr_id tmr );
-static inline void         tmr_kill( tmr_id tmr ) { SVCall(svc_tmr_kill, tmr); }
+              void     TMR_kill( tmr_id tmr );
+static inline void     tmr_kill( tmr_id tmr ) { OSCall(TMR_kill, tmr); }
 
 // uruchomienie zegara 'tmr'
 // o czasie 'time' wszystkie procesy oczekuj¹ce zostaj¹ wybudzone
 // i zostanie wykonana procedura 'proc' (jeœli 'proc' != 0)
-              void     svc_tmr_startUntil( tmr_id tmr, unsigned time, fun_id proc );
-static inline void         tmr_startUntil( tmr_id tmr, unsigned time, fun_id proc ) { SVCall(svc_tmr_startUntil, tmr, time, proc); }
+              void     TMR_startUntil( tmr_id tmr, unsigned time, fun_id proc );
+static inline void     tmr_startUntil( tmr_id tmr, unsigned time, fun_id proc ) { OSCall(TMR_startUntil, tmr, time, proc); }
 
 // uruchomienie zegara 'tmr'
 // po czasie 'delay' wszystkie procesy oczekuj¹ce zostaj¹ wybudzone
 // i zostanie wykonana procedura 'proc' (jeœli 'proc' != 0)
-              void     svc_tmr_startFor( tmr_id tmr, unsigned delay, fun_id proc );
-static inline void         tmr_startFor( tmr_id tmr, unsigned delay, fun_id proc ) { SVCall(svc_tmr_startFor, tmr, delay, proc); }
+              void     TMR_startFor( tmr_id tmr, unsigned delay, fun_id proc );
+static inline void     tmr_startFor( tmr_id tmr, unsigned delay, fun_id proc ) { OSCall(TMR_startFor, tmr, delay, proc); }
 
 // uruchomienie zegara 'tmr' z okresem 'period'
 // po czasie 'period' wszystkie procesy oczekuj¹ce zostaj¹ wybudzone
 // i zostanie wykonana procedura 'proc' (jeœli 'proc' != 0)
-              void     svc_tmr_startPeriodic( tmr_id tmr, unsigned period, fun_id proc );
-static inline void         tmr_startPeriodic( tmr_id tmr, unsigned period, fun_id proc ) { SVCall(svc_tmr_startPeriodic, tmr, period, proc); }
+              void     TMR_startPeriodic( tmr_id tmr, unsigned period, fun_id proc );
+static inline void     tmr_startPeriodic( tmr_id tmr, unsigned period, fun_id proc ) { OSCall(TMR_startPeriodic, tmr, period, proc); }
 
 // zawieszenie wykonywania aktualnego procesu do czas 'time'
 // lub do wybudzenia przez obiekt 'tmr'
 // zwraca E_SUCCESS, E_STOPPED lub E_TIMEOUT
-              unsigned svc_tmr_waitUntil( tmr_id tmr, unsigned time );
-static inline unsigned     tmr_waitUntil( tmr_id tmr, unsigned time ) { return SVCall(svc_tmr_waitUntil, tmr, time); }
+              unsigned TMR_waitUntil( tmr_id tmr, unsigned time );
+static inline unsigned tmr_waitUntil( tmr_id tmr, unsigned time ) { return OSCall(TMR_waitUntil, tmr, time); }
 
 // zawieszenie wykonywania aktualnego procesu na czas 'delay'
 // lub do wybudzenia przez obiekt 'tmr'
 // zwraca E_SUCCESS, E_STOPPED lub E_TIMEOUT
-              unsigned svc_tmr_waitFor( tmr_id tmr, unsigned delay );
-static inline unsigned     tmr_waitFor( tmr_id tmr, unsigned delay ) { return SVCall(svc_tmr_waitFor, tmr, delay); }
+              unsigned TMR_waitFor( tmr_id tmr, unsigned delay );
+static inline unsigned tmr_waitFor( tmr_id tmr, unsigned delay ) { return OSCall(TMR_waitFor, tmr, delay); }
 
 // zawieszenie wykonywania aktualnego procesu
 // do czasu wybudzenia przez obiekt 'tmr'
 // zwraca E_SUCCESS lub E_STOPPED
-static inline unsigned     tmr_wait( tmr_id tmr ) { return tmr_waitFor(tmr, INFINITE); }
+static inline unsigned tmr_wait( tmr_id tmr ) { return tmr_waitFor(tmr, INFINITE); }
 
 // czy zegar zakoñczy³ odliczanie?
 // zwraca E_SUCCESS, E_TIMEOUT
-static inline unsigned     tmr_take   ( tmr_id tmr ) { return tmr_waitFor(tmr, IMMEDIATE); }
-static inline unsigned     tmr_takeISR( tmr_id tmr ) { return tmr_waitFor(tmr, IMMEDIATE); }
+static inline unsigned tmr_take   ( tmr_id tmr ) { return tmr_waitFor(tmr, IMMEDIATE); }
+static inline unsigned tmr_takeISR( tmr_id tmr ) { return tmr_waitFor(tmr, IMMEDIATE); }
 
 // zmiana procedury aktualnie uruchomionego zegara
 // funkcja mo¿e byc wywo³ana tylko i wy³¹cznie z wnêtrza procedury zegara
-static inline void         tmr_flipISR( fun_id proc ) { System.tmr->state = proc; }
+static inline void     tmr_flipISR( fun_id proc ) { System.tmr->state = proc; }
 
 // zmiana parametrów czasowych aktualnie uruchomionego zegara
 // funkcja mo¿e byc wywo³ana tylko i wy³¹cznie z wnêtrza procedury zegara
 // (delay == 0) => zegar zostanie zatrzymany
-static inline void         tmr_delayISR( unsigned delay ) { System.tmr->delay = delay; }
+static inline void     tmr_delayISR( unsigned delay ) { System.tmr->delay = delay; }
 
 /* -------------------------------------------------------------------------- */
 

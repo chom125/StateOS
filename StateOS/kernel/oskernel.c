@@ -2,7 +2,7 @@
 
     @file    State Machine OS: oskernel.c
     @author  Rajmund Szymanski
-    @date    22.12.2015
+    @date    23.12.2015
     @brief   This file provides set of variables and functions for StateOS.
 
  ******************************************************************************
@@ -62,7 +62,7 @@ void core_tsk_loop( void )
 
 	for (;;)
 	{
-		SVCall(core_ctx_switch);
+		OSCall(core_ctx_switch);
 		cur->state();
 	}
 }
