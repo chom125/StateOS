@@ -29,7 +29,7 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-cnd_id CND_create( void )
+cnd_id os_cnd_create( void )
 /* -------------------------------------------------------------------------- */
 {
 	cnd_id cnd;
@@ -40,7 +40,7 @@ cnd_id CND_create( void )
 }
 
 /* -------------------------------------------------------------------------- */
-void CND_kill( cnd_id cnd )
+void os_cnd_kill( cnd_id cnd )
 /* -------------------------------------------------------------------------- */
 {
 	core_all_wakeup(cnd, E_STOPPED);
@@ -48,7 +48,7 @@ void CND_kill( cnd_id cnd )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned CND_wait( cnd_id cnd, mtx_id mtx, unsigned time, unsigned(*wait)() )
+unsigned os_cnd_wait( cnd_id cnd, mtx_id mtx, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event;
@@ -64,18 +64,18 @@ unsigned CND_wait( cnd_id cnd, mtx_id mtx, unsigned time, unsigned(*wait)() )
 unsigned cnd_waitUntil( cnd_id cnd, mtx_id mtx, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return CND_wait(cnd, mtx, time, core_tsk_waitUntil);
+	return os_cnd_wait(cnd, mtx, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
 unsigned cnd_waitFor( cnd_id cnd, mtx_id mtx, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return CND_wait(cnd, mtx, delay, core_tsk_waitFor);
+	return os_cnd_wait(cnd, mtx, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
-void CND_give( cnd_id cnd, bool all )
+void os_cnd_give( cnd_id cnd, bool all )
 /* -------------------------------------------------------------------------- */
 {
 	if (all) core_all_wakeup(cnd, E_SUCCESS);

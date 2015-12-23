@@ -56,33 +56,33 @@ extern "C" {
 
 // utworzenie obiektu typu zmienna warunkowa
 // zwraca adres utworzonego obiektu, lub 0
-              cnd_id   CND_create( void );
-static inline cnd_id   cnd_create( void ) { return (cnd_id) OSCall(CND_create); }
+              cnd_id   os_cnd_create( void );
+static inline cnd_id      cnd_create( void ) { return (cnd_id) OSCall(os_cnd_create); }
 // reset obiektu 'cnd'
 // wszystkie procesy oczekuj¹ce zostaj¹ wybudzone
 // zostaje do nich wys³any komunikat E_STOPPED
-              void     CND_kill( cnd_id cnd );
-static inline void     cnd_kill( cnd_id cnd ) { OSCall(CND_kill, cnd); }
+              void     os_cnd_kill( cnd_id cnd );
+static inline void        cnd_kill( cnd_id cnd ) { OSCall(os_cnd_kill, cnd); }
 
 // zawieszenie wykonywania aktualnego procesu do czasu 'time'
 // lub do wybudzenia przez obiekt 'cnd' i zajêcia obiektu 'mtx'
 // zwraca E_SUCCESS, E_STOPPED lub E_TIMEOUT
-              unsigned cnd_waitUntil( cnd_id cnd, mtx_id mtx, unsigned time );
+              unsigned    cnd_waitUntil( cnd_id cnd, mtx_id mtx, unsigned time );
 
 // zawieszenie wykonywania aktualnego procesu na czas 'delay'
 // lub do wybudzenia przez obiekt 'cnd' i zajêcia obiektu 'mtx'
 // zwraca E_SUCCESS, E_STOPPED lub E_TIMEOUT
-              unsigned cnd_waitFor( cnd_id cnd, mtx_id mtx, unsigned delay );
+              unsigned    cnd_waitFor( cnd_id cnd, mtx_id mtx, unsigned delay );
 
 // zawieszenie wykonywania aktualnego procesu
 // do czasu przez obiekt 'cnd' i zajêcia obiektu 'mtx'
 // zwraca E_SUCCESS lub E_STOPPED
-static inline unsigned cnd_wait( cnd_id cnd, mtx_id mtx ) { return cnd_waitFor(cnd, mtx, INFINITE); }
+static inline unsigned    cnd_wait( cnd_id cnd, mtx_id mtx ) { return cnd_waitFor(cnd, mtx, INFINITE); }
 
 // uwolnienie jednego lub wszytkich ('all') obiektów oczekuj¹cych
-              void     CND_give   ( cnd_id cnd, bool all );
-static inline void     cnd_give   ( cnd_id cnd, bool all ) { OSCall(CND_give, cnd, all); }
-static inline void     cnd_giveISR( cnd_id cnd, bool all ) { cnd_give(cnd, all); }
+              void     os_cnd_give   ( cnd_id cnd, bool all );
+static inline void        cnd_give   ( cnd_id cnd, bool all ) { OSCall(os_cnd_give, cnd, all); }
+static inline void        cnd_giveISR( cnd_id cnd, bool all ) { cnd_give(cnd, all); }
 
 /* -------------------------------------------------------------------------- */
 

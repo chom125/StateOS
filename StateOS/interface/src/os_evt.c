@@ -29,7 +29,7 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-evt_id EVT_create( void )
+evt_id os_evt_create( void )
 /* -------------------------------------------------------------------------- */
 {
 	evt_id evt;
@@ -40,7 +40,7 @@ evt_id EVT_create( void )
 }
 
 /* -------------------------------------------------------------------------- */
-void EVT_kill( evt_id evt )
+void os_evt_kill( evt_id evt )
 /* -------------------------------------------------------------------------- */
 {
 	core_all_wakeup(evt, E_STOPPED);
@@ -48,7 +48,7 @@ void EVT_kill( evt_id evt )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned EVT_wait( evt_id evt, unsigned time, unsigned(*wait)() )
+unsigned os_evt_wait( evt_id evt, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event;
@@ -59,21 +59,21 @@ unsigned EVT_wait( evt_id evt, unsigned time, unsigned(*wait)() )
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned EVT_waitUntil( evt_id evt, unsigned time )
+unsigned os_evt_waitUntil( evt_id evt, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return EVT_wait(evt, time, core_tsk_waitUntil);
+	return os_evt_wait(evt, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned EVT_waitFor( evt_id evt, unsigned delay )
+unsigned os_evt_waitFor( evt_id evt, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return EVT_wait(evt, delay, core_tsk_waitFor);
+	return os_evt_wait(evt, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
-void EVT_give( evt_id evt, unsigned event )
+void os_evt_give( evt_id evt, unsigned event )
 /* -------------------------------------------------------------------------- */
 {
 	core_all_wakeup(evt, event);

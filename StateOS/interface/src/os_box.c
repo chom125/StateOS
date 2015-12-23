@@ -29,7 +29,7 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-box_id BOX_create( unsigned limit, unsigned size )
+box_id os_box_create( unsigned limit, unsigned size )
 /* -------------------------------------------------------------------------- */
 {
 	box_id box;
@@ -47,7 +47,7 @@ box_id BOX_create( unsigned limit, unsigned size )
 }
 
 /* -------------------------------------------------------------------------- */
-void BOX_kill( box_id box )
+void os_box_kill( box_id box )
 /* -------------------------------------------------------------------------- */
 {
 	box->count = 0;
@@ -59,7 +59,7 @@ void BOX_kill( box_id box )
 
 /* -------------------------------------------------------------------------- */
 static
-void BOX_get( box_id box, void *data )
+void os_box_get( box_id box, void *data )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned i;
@@ -72,7 +72,7 @@ void BOX_get( box_id box, void *data )
 
 /* -------------------------------------------------------------------------- */
 static
-void BOX_put( box_id box, void *data )
+void os_box_put( box_id box, void *data )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned i;
@@ -85,7 +85,7 @@ void BOX_put( box_id box, void *data )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned BOX_wait( box_id box, void *data, unsigned time, unsigned(*wait)() )
+unsigned os_box_wait( box_id box, void *data, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
@@ -98,12 +98,12 @@ unsigned BOX_wait( box_id box, void *data, unsigned time, unsigned(*wait)() )
 	}
 	else
 	{
-		BOX_get(box, data);
+		os_box_get(box, data);
 
 	    tsk_id tsk = core_one_wakeup(box, E_SUCCESS);
 
 	    if (tsk)
-			BOX_put(box, tsk->data);
+			os_box_put(box, tsk->data);
 	    else
 			box->count--;
 	}
@@ -112,22 +112,22 @@ unsigned BOX_wait( box_id box, void *data, unsigned time, unsigned(*wait)() )
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned BOX_waitUntil( box_id box, void *data, unsigned time )
+unsigned os_box_waitUntil( box_id box, void *data, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return BOX_wait(box, data, time, core_tsk_waitUntil);
+	return os_box_wait(box, data, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned BOX_waitFor( box_id box, void *data, unsigned delay )
+unsigned os_box_waitFor( box_id box, void *data, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return BOX_wait(box, data, delay, core_tsk_waitFor);
+	return os_box_wait(box, data, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned BOX_send( box_id box, void *data, unsigned time, unsigned(*wait)() )
+unsigned os_box_send( box_id box, void *data, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
@@ -140,12 +140,12 @@ unsigned BOX_send( box_id box, void *data, unsigned time, unsigned(*wait)() )
 	}
 	else
 	{
-		BOX_put(box, data);
+		os_box_put(box, data);
 
 	    tsk_id tsk = core_one_wakeup(box, E_SUCCESS);
 
 	    if (tsk)
-			BOX_get(box, tsk->data);
+			os_box_get(box, tsk->data);
 	    else
 			box->count++;
 	}
@@ -154,17 +154,17 @@ unsigned BOX_send( box_id box, void *data, unsigned time, unsigned(*wait)() )
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned BOX_sendUntil( box_id box, void *data, unsigned time )
+unsigned os_box_sendUntil( box_id box, void *data, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return BOX_send(box, data, time, core_tsk_waitUntil);
+	return os_box_send(box, data, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned BOX_sendFor( box_id box, void *data, unsigned delay )
+unsigned os_box_sendFor( box_id box, void *data, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return BOX_send(box, data, delay, core_tsk_waitFor);
+	return os_box_send(box, data, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */

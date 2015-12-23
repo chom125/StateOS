@@ -64,45 +64,45 @@ extern "C" {
 // utworzenie obiektu typu mutex rodzaju 'type'
 // type: mtxNormal, mtxRecursive, mtxPriorityProtect, mtxPriorityInheritance 
 // zwraca adres utworzonego obiektu, lub 0
-              mtx_id   MTX_create( unsigned type );
-static inline mtx_id   mtx_create( unsigned type ) { return (mtx_id) OSCall(MTX_create, type); }
+              mtx_id   os_mtx_create( unsigned type );
+static inline mtx_id      mtx_create( unsigned type ) { return (mtx_id) OSCall(os_mtx_create, type); }
 
 // reset obiektu 'mtx'
 // wszystkie procesy oczekuj¹ce zostaj¹ wybudzone
 // zostaje do nich wys³any komunikat E_STOPPED
-              void     MTX_kill( mtx_id mtx );
-static inline void     mtx_kill( mtx_id mtx ) { OSCall(MTX_kill, mtx); }
+              void     os_mtx_kill( mtx_id mtx );
+static inline void        mtx_kill( mtx_id mtx ) { OSCall(os_mtx_kill, mtx); }
 
 // zawieszenie wykonywania aktualnego procesu do czasu 'time'
 // lub do wybudzenia przez obiekt 'mtx'
 // jeœli obiekt 'mtx' jest wolny, to nastêpuje jego zajêcie
 // zwraca E_SUCCESS, E_STOPPED lub E_TIMEOUT
-              unsigned MTX_waitUntil( mtx_id mtx, unsigned time );
-static inline unsigned mtx_waitUntil( mtx_id mtx, unsigned time ) { return OSCall(MTX_waitUntil, mtx, time); }
+              unsigned os_mtx_waitUntil( mtx_id mtx, unsigned time );
+static inline unsigned    mtx_waitUntil( mtx_id mtx, unsigned time ) { return OSCall(os_mtx_waitUntil, mtx, time); }
 
 // zawieszenie wykonywania aktualnego procesu na czas 'delay'
 // lub do wybudzenia przez obiekt 'mtx'
 // jeœli obiekt 'mtx' jest wolny, to nastêpuje jego zajêcie
 // zwraca E_SUCCESS, E_STOPPED lub E_TIMEOUT
-              unsigned MTX_waitFor( mtx_id mtx, unsigned delay );
-static inline unsigned mtx_waitFor( mtx_id mtx, unsigned delay ) { return OSCall(MTX_waitFor, mtx, delay); }
+              unsigned os_mtx_waitFor( mtx_id mtx, unsigned delay );
+static inline unsigned    mtx_waitFor( mtx_id mtx, unsigned delay ) { return OSCall(os_mtx_waitFor, mtx, delay); }
 
 // zawieszenie wykonywania aktualnego procesu
 // do czasu wybudzenia przez obiekt 'mtx'
 // jeœli obiekt 'mtx' jest wolny, to nastêpuje jego zajêcie
 // zwraca E_SUCCESS lub E_STOPPED
-static inline unsigned mtx_wait( mtx_id mtx ) { return mtx_waitFor(mtx, INFINITE); }
+static inline unsigned    mtx_wait( mtx_id mtx ) { return mtx_waitFor(mtx, INFINITE); }
 
 // nie zawiesza wykonywania aktualnego procesu
 // jeœli obiekt 'mtx' jest wolny, to nastêpuje jego zajêcie
 // zwraca E_SUCCESS lub E_TIMEOUT
-static inline unsigned mtx_take( mtx_id mtx ) { return mtx_waitFor(mtx, IMMEDIATE); }
+static inline unsigned    mtx_take( mtx_id mtx ) { return mtx_waitFor(mtx, IMMEDIATE); }
 
 // zwolnienie obiektu 'mtx'
 // obiekt 'mtx' mo¿e zwolniæ tylko proces, który go zaj¹³
 // zwraca E_SUCCESS lub E_TIMEOUT
-              unsigned MTX_give( mtx_id mtx );
-static inline unsigned mtx_give( mtx_id mtx ) { return OSCall(MTX_give, mtx); }
+              unsigned os_mtx_give( mtx_id mtx );
+static inline unsigned    mtx_give( mtx_id mtx ) { return OSCall(os_mtx_give, mtx); }
 
 /* -------------------------------------------------------------------------- */
 

@@ -29,7 +29,7 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-tmr_id TMR_create( void )
+tmr_id os_tmr_create( void )
 /* -------------------------------------------------------------------------- */
 {
 	tmr_id tmr;
@@ -40,7 +40,7 @@ tmr_id TMR_create( void )
 }
 
 /* -------------------------------------------------------------------------- */
-void TMR_kill( tmr_id tmr )
+void os_tmr_kill( tmr_id tmr )
 /* -------------------------------------------------------------------------- */
 {
 	if (tmr->id != ID_STOPPED)
@@ -52,7 +52,7 @@ void TMR_kill( tmr_id tmr )
 
 /* -------------------------------------------------------------------------- */
 static
-void TMR_start( tmr_id tmr )
+void os_tmr_start( tmr_id tmr )
 /* -------------------------------------------------------------------------- */
 {
 	if (tmr->id != ID_STOPPED)
@@ -61,7 +61,7 @@ void TMR_start( tmr_id tmr )
 }
 
 /* -------------------------------------------------------------------------- */
-void TMR_startUntil( tmr_id tmr, unsigned time, fun_id proc )
+void os_tmr_startUntil( tmr_id tmr, unsigned time, fun_id proc )
 /* -------------------------------------------------------------------------- */
 {
 	tmr->state  = proc;
@@ -69,11 +69,11 @@ void TMR_startUntil( tmr_id tmr, unsigned time, fun_id proc )
 	tmr->delay  = time - tmr->start;
 	tmr->period = 0;
 
-	TMR_start(tmr);
+	os_tmr_start(tmr);
 }
 
 /* -------------------------------------------------------------------------- */
-void TMR_startFor( tmr_id tmr, unsigned delay, fun_id proc )
+void os_tmr_startFor( tmr_id tmr, unsigned delay, fun_id proc )
 /* -------------------------------------------------------------------------- */
 {
 	tmr->state  = proc;
@@ -81,11 +81,11 @@ void TMR_startFor( tmr_id tmr, unsigned delay, fun_id proc )
 	tmr->delay  = delay;
 	tmr->period = 0;
 
-	TMR_start(tmr);
+	os_tmr_start(tmr);
 }
 
 /* -------------------------------------------------------------------------- */
-void TMR_startPeriodic( tmr_id tmr, unsigned period, fun_id proc )
+void os_tmr_startPeriodic( tmr_id tmr, unsigned period, fun_id proc )
 /* -------------------------------------------------------------------------- */
 {
 	tmr->state  = proc;
@@ -93,12 +93,12 @@ void TMR_startPeriodic( tmr_id tmr, unsigned period, fun_id proc )
 	tmr->delay  = period;
 	tmr->period = period;
 
-	TMR_start(tmr);
+	os_tmr_start(tmr);
 }
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned TMR_wait( tmr_id tmr, unsigned time, unsigned(*wait)() )
+unsigned os_tmr_wait( tmr_id tmr, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
@@ -112,17 +112,17 @@ unsigned TMR_wait( tmr_id tmr, unsigned time, unsigned(*wait)() )
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned TMR_waitUntil( tmr_id tmr, unsigned time )
+unsigned os_tmr_waitUntil( tmr_id tmr, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return TMR_wait(tmr, time, core_tsk_waitUntil);
+	return os_tmr_wait(tmr, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned TMR_waitFor( tmr_id tmr, unsigned delay )
+unsigned os_tmr_waitFor( tmr_id tmr, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return TMR_wait(tmr, delay, core_tsk_waitFor);
+	return os_tmr_wait(tmr, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */

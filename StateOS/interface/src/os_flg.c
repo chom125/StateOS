@@ -29,7 +29,7 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-flg_id FLG_create( unsigned mask )
+flg_id os_flg_create( unsigned mask )
 /* -------------------------------------------------------------------------- */
 {
 	flg_id flg;
@@ -45,7 +45,7 @@ flg_id FLG_create( unsigned mask )
 }
 
 /* -------------------------------------------------------------------------- */
-void FLG_kill( flg_id flg )
+void os_flg_kill( flg_id flg )
 /* -------------------------------------------------------------------------- */
 {
 	core_all_wakeup(flg, E_STOPPED);
@@ -53,7 +53,7 @@ void FLG_kill( flg_id flg )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned FLG_wait( flg_id flg, unsigned flags, unsigned mode, unsigned time, unsigned(*wait)() )
+unsigned os_flg_wait( flg_id flg, unsigned flags, unsigned mode, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
@@ -71,21 +71,21 @@ unsigned FLG_wait( flg_id flg, unsigned flags, unsigned mode, unsigned time, uns
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned FLG_waitUntil( flg_id flg, unsigned flags, unsigned mode, unsigned time )
+unsigned os_flg_waitUntil( flg_id flg, unsigned flags, unsigned mode, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return FLG_wait(flg, flags, mode, time, core_tsk_waitUntil);
+	return os_flg_wait(flg, flags, mode, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned FLG_waitFor( flg_id flg, unsigned flags, unsigned mode, unsigned delay )
+unsigned os_flg_waitFor( flg_id flg, unsigned flags, unsigned mode, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return FLG_wait(flg, flags, mode, delay, core_tsk_waitFor);
+	return os_flg_wait(flg, flags, mode, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
-void FLG_give( flg_id flg, unsigned flags )
+void os_flg_give( flg_id flg, unsigned flags )
 /* -------------------------------------------------------------------------- */
 {
 	flags = flg->flags |= flags;

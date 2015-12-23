@@ -55,33 +55,33 @@ extern "C" {
 // który jest pochodn¹ obiektu mailbox queue (box)
 // 'msg' jest kolejk¹ danych typu 'unsigned int'
 
-              msg_id   MSG_create( unsigned limit );
-static inline msg_id   msg_create( unsigned limit ) { return (msg_id) OSCall(MSG_create, limit); }
+              msg_id   os_msg_create( unsigned limit );
+static inline msg_id      msg_create( unsigned limit ) { return (msg_id) OSCall(os_msg_create, limit); }
 
-              void     MSG_kill( msg_id msg );
-static inline void     msg_kill( msg_id msg ) { OSCall(MSG_kill, msg); }
+              void     os_msg_kill( msg_id msg );
+static inline void        msg_kill( msg_id msg ) { OSCall(os_msg_kill, msg); }
 
-              unsigned MSG_waitUntil( msg_id msg, unsigned *data, unsigned time );
-static inline unsigned msg_waitUntil( msg_id msg, unsigned *data, unsigned time ) { return OSCall(MSG_waitUntil, msg, data, time); }
+              unsigned os_msg_waitUntil( msg_id msg, unsigned *data, unsigned time );
+static inline unsigned    msg_waitUntil( msg_id msg, unsigned *data, unsigned time ) { return OSCall(os_msg_waitUntil, msg, data, time); }
 
-              unsigned MSG_waitFor( msg_id msg, unsigned *data, unsigned delay );
-static inline unsigned msg_waitFor( msg_id msg, unsigned *data, unsigned delay ) { return OSCall(MSG_waitFor, msg, data, delay); }
+              unsigned os_msg_waitFor( msg_id msg, unsigned *data, unsigned delay );
+static inline unsigned    msg_waitFor( msg_id msg, unsigned *data, unsigned delay ) { return OSCall(os_msg_waitFor, msg, data, delay); }
 
-static inline unsigned msg_wait( msg_id msg, unsigned *data ) { return msg_waitFor(msg, data, INFINITE); }
+static inline unsigned    msg_wait( msg_id msg, unsigned *data ) { return msg_waitFor(msg, data, INFINITE); }
 
-static inline unsigned msg_take   ( msg_id msg, unsigned *data ) { return msg_waitFor(msg, data, IMMEDIATE); }
-static inline unsigned msg_takeISR( msg_id msg, unsigned *data ) { return msg_waitFor(msg, data, IMMEDIATE); }
+static inline unsigned    msg_take   ( msg_id msg, unsigned *data ) { return msg_waitFor(msg, data, IMMEDIATE); }
+static inline unsigned    msg_takeISR( msg_id msg, unsigned *data ) { return msg_waitFor(msg, data, IMMEDIATE); }
 
-              unsigned MSG_sendUntil( msg_id msg, unsigned data, unsigned time );
-static inline unsigned msg_sendUntil( msg_id msg, unsigned data, unsigned time ) { return OSCall(MSG_sendUntil, msg, data, time); }
+              unsigned os_msg_sendUntil( msg_id msg, unsigned data, unsigned time );
+static inline unsigned    msg_sendUntil( msg_id msg, unsigned data, unsigned time ) { return OSCall(os_msg_sendUntil, msg, data, time); }
 
-              unsigned MSG_sendFor( msg_id msg, unsigned data, unsigned delay );
-static inline unsigned msg_sendFor( msg_id msg, unsigned data, unsigned delay ) { return OSCall(MSG_sendFor, msg, data, delay); }
+              unsigned os_msg_sendFor( msg_id msg, unsigned data, unsigned delay );
+static inline unsigned    msg_sendFor( msg_id msg, unsigned data, unsigned delay ) { return OSCall(os_msg_sendFor, msg, data, delay); }
 
-static inline unsigned msg_send( msg_id msg, unsigned data ) { return msg_sendFor(msg, data, INFINITE); }
+static inline unsigned    msg_send( msg_id msg, unsigned data ) { return msg_sendFor(msg, data, INFINITE); }
 
-static inline unsigned msg_give   ( msg_id msg, unsigned data ) { return msg_sendFor(msg, data, IMMEDIATE); }
-static inline unsigned msg_giveISR( msg_id msg, unsigned data ) { return msg_sendFor(msg, data, IMMEDIATE); }
+static inline unsigned    msg_give   ( msg_id msg, unsigned data ) { return msg_sendFor(msg, data, IMMEDIATE); }
+static inline unsigned    msg_giveISR( msg_id msg, unsigned data ) { return msg_sendFor(msg, data, IMMEDIATE); }
 
 /* -------------------------------------------------------------------------- */
 

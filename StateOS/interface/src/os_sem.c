@@ -29,7 +29,7 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-sem_id SEM_create( unsigned limit )
+sem_id os_sem_create( unsigned limit )
 /* -------------------------------------------------------------------------- */
 {
 	sem_id sem;
@@ -45,7 +45,7 @@ sem_id SEM_create( unsigned limit )
 }
 
 /* -------------------------------------------------------------------------- */
-void SEM_kill( sem_id sem )
+void os_sem_kill( sem_id sem )
 /* -------------------------------------------------------------------------- */
 {
 	sem->count = 0;
@@ -55,7 +55,7 @@ void SEM_kill( sem_id sem )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned SEM_wait( sem_id sem, unsigned time, unsigned(*wait)() )
+unsigned os_sem_wait( sem_id sem, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
@@ -70,22 +70,22 @@ unsigned SEM_wait( sem_id sem, unsigned time, unsigned(*wait)() )
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned SEM_waitUntil( sem_id sem, unsigned time )
+unsigned os_sem_waitUntil( sem_id sem, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return SEM_wait(sem, time, core_tsk_waitUntil);
+	return os_sem_wait(sem, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned SEM_waitFor( sem_id sem, unsigned delay )
+unsigned os_sem_waitFor( sem_id sem, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return SEM_wait(sem, delay, core_tsk_waitFor);
+	return os_sem_wait(sem, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned SEM_send( sem_id sem, unsigned time, unsigned(*wait)() )
+unsigned os_sem_send( sem_id sem, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
@@ -100,17 +100,17 @@ unsigned SEM_send( sem_id sem, unsigned time, unsigned(*wait)() )
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned SEM_sendUntil( sem_id sem, unsigned time )
+unsigned os_sem_sendUntil( sem_id sem, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return SEM_send(sem, time, core_tsk_waitUntil);
+	return os_sem_send(sem, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned SEM_sendFor( sem_id sem, unsigned delay )
+unsigned os_sem_sendFor( sem_id sem, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return SEM_send(sem, delay, core_tsk_waitFor);
+	return os_sem_send(sem, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */

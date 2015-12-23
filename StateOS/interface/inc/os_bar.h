@@ -50,31 +50,31 @@ extern "C" {
 
 // utworzenie obiektu typu bariera
 // zwraca adres utworzonego obiektu, lub 0
-              bar_id   BAR_create( unsigned limit );
-static inline bar_id   bar_create( unsigned limit ) { return (bar_id) OSCall(BAR_create, limit); }
+              bar_id   os_bar_create( unsigned limit );
+static inline bar_id      bar_create( unsigned limit ) { return (bar_id) OSCall(os_bar_create, limit); }
 
 // reset obiektu 'bar'
 // wszystkie procesy oczekujace zostaja wybudzone
 // zostaje do nich wyslany komunikat E_STOPPED
-              void     BAR_kill( bar_id bar );
-static inline void     bar_kill( bar_id bar ) { OSCall(BAR_kill, bar); }
+              void     os_bar_kill( bar_id bar );
+static inline void        bar_kill( bar_id bar ) { OSCall(os_bar_kill, bar); }
 
 // zawieszenie wykonywania aktualnego procesu do czasu 'time'
 // lub do wybudzenia przez obiekt 'bar'
 // zwraca E_SUCCESS, E_STOPPED lub E_TIMEOUT
-              unsigned BAR_waitUntil( bar_id bar, unsigned time );
-static inline unsigned bar_waitUntil( bar_id bar, unsigned time ) { return OSCall(BAR_waitUntil, bar, time); }
+              unsigned os_bar_waitUntil( bar_id bar, unsigned time );
+static inline unsigned    bar_waitUntil( bar_id bar, unsigned time ) { return OSCall(os_bar_waitUntil, bar, time); }
 
 // zawieszenie wykonywania aktualnego procesu na czas 'delay'
 // lub do wybudzenia przez obiekt 'bar'
 // zwraca E_SUCCESS, E_STOPPED lub E_TIMEOUT
-              unsigned BAR_waitFor( bar_id bar, unsigned delay );
-static inline unsigned bar_waitFor( bar_id bar, unsigned delay ) { return OSCall(BAR_waitFor, bar, delay); }
+              unsigned os_bar_waitFor( bar_id bar, unsigned delay );
+static inline unsigned    bar_waitFor( bar_id bar, unsigned delay ) { return OSCall(os_bar_waitFor, bar, delay); }
 
 // zawieszenie wykonywania aktualnego procesu
 // do czasu wybudzenia przez obiekt 'bar'
 // zwraca E_SUCCESS lub E_STOPPED
-static inline unsigned bar_wait( bar_id bar ) { return bar_waitFor(bar, INFINITE); }
+static inline unsigned    bar_wait( bar_id bar ) { return bar_waitFor(bar, INFINITE); }
 
 /* -------------------------------------------------------------------------- */
 

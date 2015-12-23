@@ -29,7 +29,7 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-tsk_id TSK_create( unsigned prio, fun_id state, unsigned size )
+tsk_id os_tsk_create( unsigned prio, fun_id state, unsigned size )
 /* -------------------------------------------------------------------------- */
 {
 	size = ASIZE(sizeof(tsk_t) + size);
@@ -52,7 +52,7 @@ tsk_id TSK_create( unsigned prio, fun_id state, unsigned size )
 }
 
 /* -------------------------------------------------------------------------- */
-void TSK_start( tsk_id tsk )
+void os_tsk_start( tsk_id tsk )
 /* -------------------------------------------------------------------------- */
 {
 	if (tsk->id == ID_STOPPED)
@@ -64,7 +64,7 @@ void TSK_start( tsk_id tsk )
 }
 
 /* -------------------------------------------------------------------------- */
-void TSK_stop( void )
+void os_tsk_stop( void )
 /* -------------------------------------------------------------------------- */
 {
 //	while (System.cur->mlist) mtx_kill(System.cur->mlist);
@@ -74,7 +74,7 @@ void TSK_stop( void )
 }
 
 /* -------------------------------------------------------------------------- */
-void TSK_kill( tsk_id tsk )
+void os_tsk_kill( tsk_id tsk )
 /* -------------------------------------------------------------------------- */
 {
 //	while (tsk->mlist) mtx_kill(tsk->mlist);
@@ -102,7 +102,7 @@ void tsk_flip( fun_id state )
 }
 
 /* -------------------------------------------------------------------------- */
-void TSK_prio( unsigned prio )
+void os_tsk_prio( unsigned prio )
 /* -------------------------------------------------------------------------- */
 {
 	System.cur->bprio = prio;
@@ -112,7 +112,7 @@ void TSK_prio( unsigned prio )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned TSK_sleep( unsigned time, unsigned(*wait)() )
+unsigned os_tsk_sleep( unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event;
@@ -123,21 +123,21 @@ unsigned TSK_sleep( unsigned time, unsigned(*wait)() )
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned TSK_sleepUntil( unsigned time )
+unsigned os_tsk_sleepUntil( unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return TSK_sleep(time, core_tsk_waitUntil);
+	return os_tsk_sleep(time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned TSK_sleepFor( unsigned delay )
+unsigned os_tsk_sleepFor( unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return TSK_sleep(delay, core_tsk_waitFor);
+	return os_tsk_sleep(delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
-void TSK_resume( tsk_id tsk, unsigned event )
+void os_tsk_resume( tsk_id tsk, unsigned event )
 /* -------------------------------------------------------------------------- */
 {
 	if (tsk->id == ID_DELAYED)

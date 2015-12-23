@@ -29,7 +29,7 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-mtx_id MTX_create( unsigned type )
+mtx_id os_mtx_create( unsigned type )
 /* -------------------------------------------------------------------------- */
 {
 	mtx_id mtx;
@@ -46,7 +46,7 @@ mtx_id MTX_create( unsigned type )
 
 /* -------------------------------------------------------------------------- */
 static
-void MTX_link( mtx_id mtx, tsk_id tsk )
+void os_mtx_link( mtx_id mtx, tsk_id tsk )
 /* -------------------------------------------------------------------------- */
 {
 	mtx->owner = tsk;
@@ -61,7 +61,7 @@ void MTX_link( mtx_id mtx, tsk_id tsk )
 
 /* -------------------------------------------------------------------------- */
 static
-void MTX_unlink( mtx_id mtx )
+void os_mtx_unlink( mtx_id mtx )
 /* -------------------------------------------------------------------------- */
 {
 	if (mtx->owner)
@@ -83,10 +83,10 @@ void MTX_unlink( mtx_id mtx )
 }
 
 /* -------------------------------------------------------------------------- */
-void MTX_kill( mtx_id mtx )
+void os_mtx_kill( mtx_id mtx )
 /* -------------------------------------------------------------------------- */
 {
-	MTX_unlink(mtx);
+	os_mtx_unlink(mtx);
 
 	mtx->count = 0;
 
@@ -95,14 +95,14 @@ void MTX_kill( mtx_id mtx )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned MTX_wait( mtx_id mtx, unsigned time, unsigned(*wait)() )
+unsigned os_mtx_wait( mtx_id mtx, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_TIMEOUT;
 
 	if (mtx->owner == 0)
 	{
-		MTX_link(mtx, System.cur);
+		os_mtx_link(mtx, System.cur);
 
 		event = E_SUCCESS;
 	}
@@ -129,21 +129,21 @@ unsigned MTX_wait( mtx_id mtx, unsigned time, unsigned(*wait)() )
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned MTX_waitUntil( mtx_id mtx, unsigned time )
+unsigned os_mtx_waitUntil( mtx_id mtx, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return MTX_wait(mtx, time, core_tsk_waitUntil);
+	return os_mtx_wait(mtx, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned MTX_waitFor( mtx_id mtx, unsigned delay )
+unsigned os_mtx_waitFor( mtx_id mtx, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return MTX_wait(mtx, delay, core_tsk_waitFor);
+	return os_mtx_wait(mtx, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned MTX_give( mtx_id mtx )
+unsigned os_mtx_give( mtx_id mtx )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_TIMEOUT;
@@ -156,8 +156,8 @@ unsigned MTX_give( mtx_id mtx )
 		}
 		else
 		{
-			MTX_unlink(mtx);
-			MTX_link(mtx, core_one_wakeup(mtx, E_SUCCESS));
+			os_mtx_unlink(mtx);
+			os_mtx_link(mtx, core_one_wakeup(mtx, E_SUCCESS));
 		}
 
 		event = E_SUCCESS;

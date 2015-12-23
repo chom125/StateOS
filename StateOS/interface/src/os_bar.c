@@ -29,7 +29,7 @@
 #include <os.h>
 
 /* -------------------------------------------------------------------------- */
-bar_id BAR_create( unsigned limit )
+bar_id os_bar_create( unsigned limit )
 /* -------------------------------------------------------------------------- */
 {
 	bar_id bar;
@@ -46,7 +46,7 @@ bar_id BAR_create( unsigned limit )
 }
 
 /* -------------------------------------------------------------------------- */
-void BAR_kill( bar_id bar )
+void os_bar_kill( bar_id bar )
 /* -------------------------------------------------------------------------- */
 {
 	bar->count = bar->limit;
@@ -56,7 +56,7 @@ void BAR_kill( bar_id bar )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned BAR_wait( bar_id bar, unsigned time, unsigned(*wait)() )
+unsigned os_bar_wait( bar_id bar, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
@@ -76,17 +76,17 @@ unsigned BAR_wait( bar_id bar, unsigned time, unsigned(*wait)() )
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned BAR_waitUntil( bar_id bar, unsigned time )
+unsigned os_bar_waitUntil( bar_id bar, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return BAR_wait(bar, time, core_tsk_waitUntil);
+	return os_bar_wait(bar, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
-unsigned BAR_waitFor( bar_id bar, unsigned delay )
+unsigned os_bar_waitFor( bar_id bar, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return BAR_wait(bar, delay, core_tsk_waitFor);
+	return os_bar_wait(bar, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
