@@ -1,8 +1,8 @@
 /******************************************************************************
 
-    @file    State Machine OS: svcall.h
+    @file    State Machine OS: oscall.h
     @author  Rajmund Szymanski
-    @date    21.12.2015
+    @date    23.12.2015
     @brief   This file contains macro definitions for the Cortex-M devices.
 
  ******************************************************************************

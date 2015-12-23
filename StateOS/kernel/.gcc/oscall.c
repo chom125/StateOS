@@ -1,6 +1,6 @@
 /******************************************************************************
 
-    @file    State Machine OS: svcall.c
+    @file    State Machine OS: oscall.c
     @author  Rajmund Szymanski
     @date    22.12.2015
     @brief   This file defines SVC_Handler for STM32 uC.
@@ -26,15 +26,19 @@
 
  ******************************************************************************/
 
-#ifdef __CC_ARM
+#ifdef __GNUC__
 
-__asm void SVC_Handler( void )
+__attribute__((naked))
+void SVC_Handler( void )
 {
-	push { r4, lr }
-	mrs    r4, PSP
-	blx    ip
-	str    r0,[r4]
-	pop  { r4, pc }
+	__asm volatile
+	(
+"	push { r4, lr } \n"
+"	mrs    r4, PSP  \n"
+"	blx    ip       \n"
+"	str    r0,[r4]  \n"
+"	pop  { r4, pc } \n"
+	);
 }
 
 #endif

@@ -45,7 +45,8 @@ mtx_id svc_mtx_create( unsigned type )
 }
 
 /* -------------------------------------------------------------------------- */
-static void priv_mtx_link( mtx_id mtx, tsk_id tsk )
+static
+void priv_mtx_link( mtx_id mtx, tsk_id tsk )
 /* -------------------------------------------------------------------------- */
 {
 	mtx->owner = tsk;
@@ -59,7 +60,8 @@ static void priv_mtx_link( mtx_id mtx, tsk_id tsk )
 }
 
 /* -------------------------------------------------------------------------- */
-static void priv_mtx_unlink( mtx_id mtx )
+static
+void priv_mtx_unlink( mtx_id mtx )
 /* -------------------------------------------------------------------------- */
 {
 	if (mtx->owner)
