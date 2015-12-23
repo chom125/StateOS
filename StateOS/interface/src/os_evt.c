@@ -48,7 +48,7 @@ void os_evt_kill( evt_id evt )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned os_evt_wait( evt_id evt, unsigned time, unsigned(*wait)() )
+unsigned priv_evt_wait( evt_id evt, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event;
@@ -62,14 +62,14 @@ unsigned os_evt_wait( evt_id evt, unsigned time, unsigned(*wait)() )
 unsigned os_evt_waitUntil( evt_id evt, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return os_evt_wait(evt, time, core_tsk_waitUntil);
+	return priv_evt_wait(evt, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
 unsigned os_evt_waitFor( evt_id evt, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return os_evt_wait(evt, delay, core_tsk_waitFor);
+	return priv_evt_wait(evt, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */

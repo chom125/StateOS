@@ -46,7 +46,7 @@ mtx_id os_mtx_create( unsigned type )
 
 /* -------------------------------------------------------------------------- */
 static
-void os_mtx_link( mtx_id mtx, tsk_id tsk )
+void priv_mtx_link( mtx_id mtx, tsk_id tsk )
 /* -------------------------------------------------------------------------- */
 {
 	mtx->owner = tsk;
@@ -61,7 +61,7 @@ void os_mtx_link( mtx_id mtx, tsk_id tsk )
 
 /* -------------------------------------------------------------------------- */
 static
-void os_mtx_unlink( mtx_id mtx )
+void priv_mtx_unlink( mtx_id mtx )
 /* -------------------------------------------------------------------------- */
 {
 	if (mtx->owner)
@@ -86,7 +86,7 @@ void os_mtx_unlink( mtx_id mtx )
 void os_mtx_kill( mtx_id mtx )
 /* -------------------------------------------------------------------------- */
 {
-	os_mtx_unlink(mtx);
+	priv_mtx_unlink(mtx);
 
 	mtx->count = 0;
 
@@ -95,14 +95,14 @@ void os_mtx_kill( mtx_id mtx )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned os_mtx_wait( mtx_id mtx, unsigned time, unsigned(*wait)() )
+unsigned priv_mtx_wait( mtx_id mtx, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_TIMEOUT;
 
 	if (mtx->owner == 0)
 	{
-		os_mtx_link(mtx, System.cur);
+		priv_mtx_link(mtx, System.cur);
 
 		event = E_SUCCESS;
 	}
@@ -132,14 +132,14 @@ unsigned os_mtx_wait( mtx_id mtx, unsigned time, unsigned(*wait)() )
 unsigned os_mtx_waitUntil( mtx_id mtx, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return os_mtx_wait(mtx, time, core_tsk_waitUntil);
+	return priv_mtx_wait(mtx, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
 unsigned os_mtx_waitFor( mtx_id mtx, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return os_mtx_wait(mtx, delay, core_tsk_waitFor);
+	return priv_mtx_wait(mtx, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -156,8 +156,8 @@ unsigned os_mtx_give( mtx_id mtx )
 		}
 		else
 		{
-			os_mtx_unlink(mtx);
-			os_mtx_link(mtx, core_one_wakeup(mtx, E_SUCCESS));
+			priv_mtx_unlink(mtx);
+			priv_mtx_link(mtx, core_one_wakeup(mtx, E_SUCCESS));
 		}
 
 		event = E_SUCCESS;

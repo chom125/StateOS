@@ -53,7 +53,7 @@ void os_flg_kill( flg_id flg )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned os_flg_wait( flg_id flg, unsigned flags, unsigned mode, unsigned time, unsigned(*wait)() )
+unsigned priv_flg_wait( flg_id flg, unsigned flags, unsigned mode, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
@@ -74,14 +74,14 @@ unsigned os_flg_wait( flg_id flg, unsigned flags, unsigned mode, unsigned time, 
 unsigned os_flg_waitUntil( flg_id flg, unsigned flags, unsigned mode, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return os_flg_wait(flg, flags, mode, time, core_tsk_waitUntil);
+	return priv_flg_wait(flg, flags, mode, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
 unsigned os_flg_waitFor( flg_id flg, unsigned flags, unsigned mode, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return os_flg_wait(flg, flags, mode, delay, core_tsk_waitFor);
+	return priv_flg_wait(flg, flags, mode, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */

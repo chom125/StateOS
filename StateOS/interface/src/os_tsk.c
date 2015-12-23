@@ -112,7 +112,7 @@ void os_tsk_prio( unsigned prio )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned os_tsk_sleep( unsigned time, unsigned(*wait)() )
+unsigned priv_tsk_sleep( unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event;
@@ -126,14 +126,14 @@ unsigned os_tsk_sleep( unsigned time, unsigned(*wait)() )
 unsigned os_tsk_sleepUntil( unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return os_tsk_sleep(time, core_tsk_waitUntil);
+	return priv_tsk_sleep(time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
 unsigned os_tsk_sleepFor( unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return os_tsk_sleep(delay, core_tsk_waitFor);
+	return priv_tsk_sleep(delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */

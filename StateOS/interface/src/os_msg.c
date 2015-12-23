@@ -58,7 +58,7 @@ void os_msg_kill( msg_id msg )
 
 /* -------------------------------------------------------------------------- */
 static
-void os_msg_get( msg_id msg, unsigned *data )
+void priv_msg_get( msg_id msg, unsigned *data )
 /* -------------------------------------------------------------------------- */
 {
 	*data = msg->data[msg->first];
@@ -68,7 +68,7 @@ void os_msg_get( msg_id msg, unsigned *data )
 
 /* -------------------------------------------------------------------------- */
 static
-void os_msg_put( msg_id msg, unsigned data )
+void priv_msg_put( msg_id msg, unsigned data )
 /* -------------------------------------------------------------------------- */
 {
 	msg->data[msg->next] = data;
@@ -78,7 +78,7 @@ void os_msg_put( msg_id msg, unsigned data )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned os_msg_wait( msg_id msg, unsigned *data, unsigned time, unsigned(*wait)() )
+unsigned priv_msg_wait( msg_id msg, unsigned *data, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
@@ -91,12 +91,12 @@ unsigned os_msg_wait( msg_id msg, unsigned *data, unsigned time, unsigned(*wait)
 	}
 	else
 	{
-		os_msg_get(msg, data);
+		priv_msg_get(msg, data);
 
 	    tsk_id tsk = core_one_wakeup(msg, E_SUCCESS);
 
 	    if (tsk)
-			os_msg_put(msg, tsk->msg);
+			priv_msg_put(msg, tsk->msg);
 	    else
 			msg->count--;
 	}
@@ -108,19 +108,19 @@ unsigned os_msg_wait( msg_id msg, unsigned *data, unsigned time, unsigned(*wait)
 unsigned os_msg_waitUntil( msg_id msg, unsigned *data, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return os_msg_wait(msg, data, time, core_tsk_waitUntil);
+	return priv_msg_wait(msg, data, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
 unsigned os_msg_waitFor( msg_id msg, unsigned *data, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return os_msg_wait(msg, data, delay, core_tsk_waitFor);
+	return priv_msg_wait(msg, data, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned os_msg_send( msg_id msg, unsigned data, unsigned time, unsigned(*wait)() )
+unsigned priv_msg_send( msg_id msg, unsigned data, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
@@ -133,12 +133,12 @@ unsigned os_msg_send( msg_id msg, unsigned data, unsigned time, unsigned(*wait)(
 	}
 	else
 	{
-		os_msg_put(msg, data);
+		priv_msg_put(msg, data);
 
 	    tsk_id tsk = core_one_wakeup(msg, E_SUCCESS);
 
 	    if (tsk)
-			os_msg_get(msg, tsk->data);
+			priv_msg_get(msg, tsk->data);
 	    else
 			msg->count++;
 	}
@@ -150,14 +150,14 @@ unsigned os_msg_send( msg_id msg, unsigned data, unsigned time, unsigned(*wait)(
 unsigned os_msg_sendUntil( msg_id msg, unsigned data, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return os_msg_send(msg, data, time, core_tsk_waitUntil);
+	return priv_msg_send(msg, data, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
 unsigned os_msg_sendFor( msg_id msg, unsigned data, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return os_msg_send(msg, data, delay, core_tsk_waitFor);
+	return priv_msg_send(msg, data, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */

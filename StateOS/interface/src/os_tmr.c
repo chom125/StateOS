@@ -52,7 +52,7 @@ void os_tmr_kill( tmr_id tmr )
 
 /* -------------------------------------------------------------------------- */
 static
-void os_tmr_start( tmr_id tmr )
+void priv_tmr_start( tmr_id tmr )
 /* -------------------------------------------------------------------------- */
 {
 	if (tmr->id != ID_STOPPED)
@@ -69,7 +69,7 @@ void os_tmr_startUntil( tmr_id tmr, unsigned time, fun_id proc )
 	tmr->delay  = time - tmr->start;
 	tmr->period = 0;
 
-	os_tmr_start(tmr);
+	priv_tmr_start(tmr);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -81,7 +81,7 @@ void os_tmr_startFor( tmr_id tmr, unsigned delay, fun_id proc )
 	tmr->delay  = delay;
 	tmr->period = 0;
 
-	os_tmr_start(tmr);
+	priv_tmr_start(tmr);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -93,12 +93,12 @@ void os_tmr_startPeriodic( tmr_id tmr, unsigned period, fun_id proc )
 	tmr->delay  = period;
 	tmr->period = period;
 
-	os_tmr_start(tmr);
+	priv_tmr_start(tmr);
 }
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned os_tmr_wait( tmr_id tmr, unsigned time, unsigned(*wait)() )
+unsigned priv_tmr_wait( tmr_id tmr, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
@@ -115,14 +115,14 @@ unsigned os_tmr_wait( tmr_id tmr, unsigned time, unsigned(*wait)() )
 unsigned os_tmr_waitUntil( tmr_id tmr, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return os_tmr_wait(tmr, time, core_tsk_waitUntil);
+	return priv_tmr_wait(tmr, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
 unsigned os_tmr_waitFor( tmr_id tmr, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return os_tmr_wait(tmr, delay, core_tsk_waitFor);
+	return priv_tmr_wait(tmr, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */

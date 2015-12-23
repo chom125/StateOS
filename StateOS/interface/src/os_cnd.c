@@ -48,7 +48,7 @@ void os_cnd_kill( cnd_id cnd )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned os_cnd_wait( cnd_id cnd, mtx_id mtx, unsigned time, unsigned(*wait)() )
+unsigned priv_cnd_wait( cnd_id cnd, mtx_id mtx, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event;
@@ -64,14 +64,14 @@ unsigned os_cnd_wait( cnd_id cnd, mtx_id mtx, unsigned time, unsigned(*wait)() )
 unsigned cnd_waitUntil( cnd_id cnd, mtx_id mtx, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return os_cnd_wait(cnd, mtx, time, core_tsk_waitUntil);
+	return priv_cnd_wait(cnd, mtx, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
 unsigned cnd_waitFor( cnd_id cnd, mtx_id mtx, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return os_cnd_wait(cnd, mtx, delay, core_tsk_waitFor);
+	return priv_cnd_wait(cnd, mtx, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */

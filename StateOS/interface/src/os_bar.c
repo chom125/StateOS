@@ -56,7 +56,7 @@ void os_bar_kill( bar_id bar )
 
 /* -------------------------------------------------------------------------- */
 static inline __attribute__((always_inline))
-unsigned os_bar_wait( bar_id bar, unsigned time, unsigned(*wait)() )
+unsigned priv_bar_wait( bar_id bar, unsigned time, unsigned(*wait)() )
 /* -------------------------------------------------------------------------- */
 {
 	unsigned event = E_SUCCESS;
@@ -79,14 +79,14 @@ unsigned os_bar_wait( bar_id bar, unsigned time, unsigned(*wait)() )
 unsigned os_bar_waitUntil( bar_id bar, unsigned time )
 /* -------------------------------------------------------------------------- */
 {
-	return os_bar_wait(bar, time, core_tsk_waitUntil);
+	return priv_bar_wait(bar, time, core_tsk_waitUntil);
 }
 
 /* -------------------------------------------------------------------------- */
 unsigned os_bar_waitFor( bar_id bar, unsigned delay )
 /* -------------------------------------------------------------------------- */
 {
-	return os_bar_wait(bar, delay, core_tsk_waitFor);
+	return priv_bar_wait(bar, delay, core_tsk_waitFor);
 }
 
 /* -------------------------------------------------------------------------- */
